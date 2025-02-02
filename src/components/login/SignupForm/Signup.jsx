@@ -5,6 +5,7 @@ import React, { useState } from 'react';
 
 function Signup() {
     const [passwordsMatch, setPasswordsMatch] = useState(true);
+    const [loading, setLoading] = useState(false);
 
     const [formData, setFormData] = useState({
         fullName: "",
@@ -43,27 +44,37 @@ function Signup() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
 
-       try {
+        try {
 
-       await  fetch('/api/initiate-payment', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body : JSON.stringify(formData)
-        })
-    
+            let response = await fetch('/api/initiate-payment', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            })
+
+            const data = await response.json();
+
+            if (data.paymentUrl) {
+                window.location.href = data.paymentUrl; // Redirect to Cashfree payment link
+            } else {
+                alert(data.message || "Payment initiation failed");
+            }
+
         } catch (error) {
-        console.log("Error submitting form", error);
-        
-       }
-        
+            console.log("Error submitting form", error);
+        } finally {
+            setLoading(false);
+        }
+
     }
 
     return (
         <>
-            <form  onSubmit={handleSubmit} className="space-y-4 max-h-[65vh] overflow-auto px-2 [scrollbar-width:thin] [scrollbar-color:#d1d5db_#f3f4f6]">
+            <form onSubmit={handleSubmit} className="space-y-4 max-h-[65vh] overflow-auto px-2 [scrollbar-width:thin] [scrollbar-color:#d1d5db_#f3f4f6]">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                     <div>
                         <label className="block text-sm font-medium text-gray-700">Full Name</label>
@@ -166,7 +177,7 @@ function Signup() {
                 </div>
 
                 <button type='submit' className="w-full bg-blue-600 text-white p-3 rounded-lg font-semibold hover:bg-blue-700 transition-all">
-                  {formData.membershipType==="individual" ? 2000 : formData.institutionalamount }  Pay Now
+                    {formData.membershipType === "individual" ? 2000 : formData.institutionalamount}  Pay Now
                 </button>
             </form>
         </>

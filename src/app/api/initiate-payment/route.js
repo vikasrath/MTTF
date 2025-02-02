@@ -13,7 +13,7 @@ export async function POST(req) {
 
   try {
     const newuser =  await createUser({name:fullName,email,phone,orderId,password});
-  console.log(" user created",newuser);
+  // console.log(" user created",newuser);
 
     const cashfreeResponse = await axios.post(
       "https://api.cashfree.com/pg/orders",
@@ -36,6 +36,9 @@ export async function POST(req) {
         },
       }
     );
+
+    // console.log(cashfreeResponse.data);
+    
 
     return new Response(
       JSON.stringify({ paymentUrl: cashfreeResponse.data.payment_link }),
