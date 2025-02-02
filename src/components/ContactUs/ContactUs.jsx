@@ -6,7 +6,7 @@ function ContactUs() {
     return (
         <section 
     id="contact" 
-    className="relative bg-gradient-to-b from-gray-900 via-gray-700 60% via-gray-500 80% to-gray-200 text-white py-24 sm:py-36"
+    className="relative bg-gradient-to-b from-gray-900  60% via-gray-500 80% to-gray-200 text-white py-24 sm:py-36"
 >
 
             <div className="container mx-auto max-w-7xl px-6 lg:px-12">
