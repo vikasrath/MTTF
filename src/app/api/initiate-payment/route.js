@@ -4,19 +4,24 @@ import createUser from "@/controller/userController";
 export async function POST(req) {
 
   const body = await req.json(); // Parse request body
-  const { name, email, phone, amount } = body;
+  
+  const { fullName, email, phone, password,membershipType,institutionalamount } = body;
+  
+  const amount = membershipType === "individual" ? 2000 : Number(institutionalamount);
 
   const orderId = `order_${Date.now()}`;
 
   try {
-    const newuser =  await createUser({name,email,phone,orderId});
+    const newuser =  await createUser({name:fullName,email,phone,orderId,password});
+  console.log(" user created",newuser);
+
     const cashfreeResponse = await axios.post(
       "https://api.cashfree.com/pg/orders",
       {
         orderId: orderId,
         order_amount: amount,
         order_currency: "INR",
-        customer_details: { customer_id:newuser._id,customer_phone:phone,customer_name: name, customer_email: email },
+        customer_details: { customer_id:newuser._id,customer_phone:phone,customer_name: fullName, customer_email: email },
         order_meta: {
           return_url: "https://www.google.co.uk/",
           notify_url: "https://paymentgateway-omega.vercel.app/api/verify-payment",

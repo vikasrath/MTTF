@@ -12,6 +12,7 @@
     "@gsap/react": "^2.1.1",
     "@heroicons/react": "^2.2.0",
     "axios": "^1.7.9",
+    "bcryptjs": "^2.4.3",
     "file-loader": "^6.2.0",
     "gsap": "^3.12.5",
     "mongoose": "^8.9.5",
