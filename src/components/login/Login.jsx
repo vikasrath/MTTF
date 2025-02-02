@@ -8,7 +8,7 @@ export default function AuthPage({ setAuth, auth }) {
 
   return (
     <div className="flex items-center justify-center min-h-screen p-4 w-full absolute top-0 z-50">
-      <div className="relative w-full max-w-md p-6 bg-white rounded-xl shadow-lg border border-gray-200">
+      <div className="relative w-full max-w-xl p-6 bg-white rounded-xl shadow-lg border border-gray-200">
         {/* Close Button */}
         <button 
           onClick={() => setAuth(false)}
