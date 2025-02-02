@@ -15,21 +15,23 @@ import sourabh from "../../../../../public/assets/GovermentBodyImage/sourabh.jpg
 
 export const leaders = {
     leadership: [
-        { name: "Mehar Chand, Ph.D", position: "Founder & President (MTTF, India)", img: meher },
-        { name: "Gurmej Singh Sandhu, Ph.D", position: "General Secretary (MTTF, India)", memberId: "MTTF2017073", img: gurmeet },
-        { name: "Jaswinder Pal, Ph.D", position: "Director of Accounts (MTTF, India)", memberId: "MTTF6104175", img: jasswinder },
-        { name: "Sourabh Kumar", position: "Assistant Vice President", memberId: "", img: sourabh, profileLink: "https://www.linkedin.com/in/sourabhkumar91/" },
-        { name: "Biswaranjan Senapati, Ph.D", position: "Digital solution architect", memberId: "MTTF19596466", img: biswaranjan },
-        { name: "Pooja, Ph.D", position: "Executive Member (MTTF, India)", memberId: "MTTF20102922", img: pooja },
-        { name: "Bharti Kapoor, Ph.D", position: "Executive Member (MTTF, India)", memberId: "MTTF6547519", img: bharti },
-        { name: "Madhuchanda Rakshit, Ph.D", position: "Executive Member (MTTF, India)", memberId: "MTTF7597798", img: Madhuchand },
-        { name: "Yogita Shama, Ph.D", position: "Executive Member (MTTF, India)", memberId: "MTTF000000", img: yogita },
-        { name: "Upinder Kaur, Ph.D", position: "Executive Member (MTTF, India)", memberId: "MTTF9928796", img: upinder },
-        { name: "Shalu Gupta, Ph.D", position: "Executive Member (MTTF, India)", memberId: "MTTF367784", img: shalu },
-        { name: "Daljeet Kaur, Ph.D", position: "Executive Member (MTTF, India)", memberId: "MTTF19568242", img: daljeet },
-        { name: "Jatin Bansal, JRF", position: "Executive Member (MTTF, India)", memberId: "MTTF19541982", img: jatin }
+        { name: "Mehar Chand, Ph.D", position: "Founder & President (MTTF, India)", img: meher, profileLink: "https://www.linkedin.com/in/dr-mehar-chand-5484b971/" },
+        { name: "Gurmej Singh Sandhu, Ph.D", position: "General Secretary (MTTF, India)", img: gurmeet, profileLink: "https://www.linkedin.com/in/gurmej-sandhu-8a6693aa/" },
+        { name: "Jaswinder Pal, Ph.D", position: "Director of Accounts (MTTF, India)", img: jasswinder, profileLink: "https://www.linkedin.com/in/dr-jaswinder-pal-devgan-85b872192/" },
+        { name: "Sourabh Kumar", position: "Chief Operating Officer", img: sourabh, profileLink: "https://www.linkedin.com/in/sourabhkumar91/" },
+        { name: "Biswaranjan Senapati, Ph.D", position: "Digital solution architect", img: biswaranjan },
+        { name: "Pooja, Ph.D", position: "Executive Member (MTTF, India)", img: pooja, profileLink: "https://www.linkedin.com/in/p-b28802262/" },
+        { name: "Bharti Kapoor, Ph.D", position: "Executive Member (MTTF, India)", img: bharti },
+        { name: "Madhuchanda Rakshit, Ph.D", position: "Executive Member (MTTF, India)", img: Madhuchand, profileLink: "https://www.linkedin.com/in/dr-madhuchanda-rakshit-702799119/" },
+        { name: "Yogita Shama, Ph.D", position: "Executive Member (MTTF, India)", img: yogita },
+        { name: "Upinder Kaur, Ph.D", position: "Executive Member (MTTF, India)", img: upinder },
+        { name: "Shalu Gupta, Ph.D", position: "Executive Member (MTTF, India)", img: shalu },
+        { name: "Daljeet Kaur, Ph.D", position: "Executive Member (MTTF, India)", img: daljeet },
+        { name: "Jatin Bansal, JRF", position: "Executive Member (MTTF, India)", img: jatin, profileLink: "https://www.linkedin.com/in/jatin-bansal-201291256/" },
+        { name: "Vikas", position: "Software Developer", img: jatin, profileLink: "https://www.linkedin.com/in/vikas-rathore-a799432b9/" },
+        { name: "Devansh", position: "Software Developer", img: jatin, profileLink: "https://www.linkedin.com/in/devansh-agaarwal/" }
     ],
     advisory: [
-        { name: "Mehar Chand, Ph.D", position: "Founder & President (MTTF, India)", img: meher }
+        { name: "Mehar Chand, Ph.D", position: "Founder & President (MTTF, India)", img: meher, profileLink: "https://www.linkedin.com/in/dr-mehar-chand-5484b971/" },
     ]
 }

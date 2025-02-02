@@ -39,7 +39,7 @@ function GoverningBody() {
         {/* Leadership Button */}
         <div
           onClick={() => handleSelect("leadership")}
-          className={`flex items-center justify-center gap-2 px-6 w-40 py-3 rounded-2xl font-semibold transition-all duration-300 focus:outline-none ${
+          className={`flex items-center justify-center gap-2 px-6 w-40 py-3 rounded-2xl font-semibold transition-all duration-300 focus:outline-hidden ${
             selected === "leadership"
               ? "bg-[#3784A8] text-white"
               : "bg-gray-200 text-gray-700"
