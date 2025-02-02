@@ -2,7 +2,6 @@
 import introVideo from "../../../public/assets/introMTTF.mp4";
 import Link from "next/link";
 import { motion } from "motion/react"
-import { root } from "postcss";
 
 
 function HomeHeader() {

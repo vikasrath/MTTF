@@ -1,6 +1,11 @@
+"use client";
+
+import axios from 'axios';
 import React, { useState } from 'react';
 
 function Signup() {
+    const [passwordsMatch, setPasswordsMatch] = useState(true);
+
     const [formData, setFormData] = useState({
         fullName: "",
         email: "",
@@ -8,10 +13,9 @@ function Signup() {
         password: "",
         confirmPassword: "",
         membershipType: "individual",
-        institutionalSize: undefined,
+        institutionalamount: undefined,
     });
 
-    const [passwordsMatch, setPasswordsMatch] = useState(true);
 
     const handleConfirmPasswordChange = (e) => {
         const value = e.target.value;
@@ -31,16 +35,35 @@ function Signup() {
 
     const handelMembershipType = (type) => {
         if (type === "individual") {
-            setFormData({ ...formData, membershipType: "individual", institutionalSize: undefined });
+            setFormData({ ...formData, membershipType: "individual", institutionalamount: undefined });
         } else {
-            setFormData({ ...formData, membershipType: "institutional", institutionalSize: "small" });
+            setFormData({ ...formData, membershipType: "institutional", institutionalamount: 50000 });
         }
     };
 
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+       try {
+
+       await  fetch('/api/initiate-payment', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body : JSON.stringify(formData)
+        })
+    
+        } catch (error) {
+        console.log("Error submitting form", error);
+        
+       }
+        
+    }
+
     return (
         <>
-            <form className="space-y-4 max-h-[65vh] overflow-auto px-2 [scrollbar-width:thin] 
-  [scrollbar-color:#d1d5db_#f3f4f6]">
+            <form  onSubmit={handleSubmit} className="space-y-4 max-h-[65vh] overflow-auto px-2 [scrollbar-width:thin] [scrollbar-color:#d1d5db_#f3f4f6]">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                     <div>
                         <label className="block text-sm font-medium text-gray-700">Full Name</label>
@@ -80,8 +103,8 @@ function Signup() {
                     <div className="grid grid-cols-2 gap-4 mt-4">
                         <div
                             className={`flex flex-col justify-center items-center p-2 border-2 rounded-xl cursor-pointer transition-all ${formData.membershipType === "individual"
-                                    ? "border-blue-500 bg-blue-50"
-                                    : "border-gray-200 hover:border-blue-300"
+                                ? "border-blue-500 bg-blue-50"
+                                : "border-gray-200 hover:border-blue-300"
                                 }`}
                             onClick={() => handelMembershipType("individual")}
                         >
@@ -90,8 +113,8 @@ function Signup() {
                         </div>
                         <div
                             className={`flex flex-col justify-center items-center p-2 border-2 rounded-xl cursor-pointer transition-all ${formData.membershipType === "institutional"
-                                    ? "border-blue-500 bg-blue-50"
-                                    : "border-gray-200 hover:border-blue-300"
+                                ? "border-blue-500 bg-blue-50"
+                                : "border-gray-200 hover:border-blue-300"
                                 }`}
                             onClick={() => handelMembershipType("institutional")}
                         >
@@ -106,12 +129,12 @@ function Signup() {
                         <label className="block text-sm font-medium text-gray-700">Institution Size</label>
                         <select
                             className="w-full p-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            value={formData.institutionalSize}
-                            onChange={handleChange("institutionalSize")}
+                            value={formData.institutionalamount}
+                            onChange={handleChange("institutionalamount")}
                         >
-                            <option value="small">Small - Up to 100 members</option>
-                            <option value="medium">Medium - Up to 500 members</option>
-                            <option value="large">Large - 500+ members</option>
+                            <option value=" 50000">Small - Up to 100 members</option>
+                            <option value=" 100000">Medium - Up to 500 members</option>
+                            <option value=" 200000">Large - 500+ members</option>
                         </select>
                     </div>
                 )}
@@ -142,8 +165,8 @@ function Signup() {
                     {!passwordsMatch && <p className="text-sm text-red-500">Passwords do not match.</p>}
                 </div>
 
-                <button className="w-full bg-blue-600 text-white p-3 rounded-lg font-semibold hover:bg-blue-700 transition-all">
-                    Sign Up
+                <button type='submit' className="w-full bg-blue-600 text-white p-3 rounded-lg font-semibold hover:bg-blue-700 transition-all">
+                  {formData.membershipType==="individual" ? 2000 : formData.institutionalamount }  Pay Now
                 </button>
             </form>
         </>
