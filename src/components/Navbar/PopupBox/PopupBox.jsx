@@ -35,7 +35,7 @@ function PopupBox({ linkBox, closeIcon }) {
                         <div key={index} className="space-y-4">
 
                             {/* Category Heading */}
-                            {category.links && (
+                            {category.heading && (
                                 <h3 className="text-xl font-semibold  font-mono text-white-400 uppercase border-b-2 border-gray-600 pb-2">
                                     {category.heading}
                                 </h3>
@@ -45,7 +45,8 @@ function PopupBox({ linkBox, closeIcon }) {
                             <ul className="space-y-3">
                                 {category.links !== "Login" ? (
                                     category.links.map((link, linkIndex) => (
-                                        link.linkName == "Login" ? <li key={linkIndex}>
+                                        link.linkName == "Login" ? 
+                                        <li key={linkIndex}>
                                             <div
                                                 href={link.path ? link.path : '#'}
                                                 className="block text-lg text-white-300 hover:text-blue-400 hover:translate-x-1 transition duration-200"
@@ -53,7 +54,8 @@ function PopupBox({ linkBox, closeIcon }) {
                                             >
                                                 {link.linkName}
                                             </div>
-                                        </li> :
+                                        </li> 
+                                        :
                                             <li key={linkIndex}>
                                                 <Link
                                                     href={link.path ? link.path : '#'}
@@ -70,7 +72,7 @@ function PopupBox({ linkBox, closeIcon }) {
                                             className="block text-lg text-gray-300 hover:text-white hover:translate-x-1 transition duration-200"
                                             onClick={() => closeIcon({ whatWeDo: false, whatWeThink: false, whoWeAre: false })}
                                         >
-                                            {category.heading}
+                                            {category.heading && category.heading}
                                         </div>
                                     </li>
                                 )}

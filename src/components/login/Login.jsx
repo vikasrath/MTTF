@@ -7,7 +7,7 @@ export default function AuthPage({ setAuth, auth }) {
   const [isSignUp, setIsSignUp] = useState(false);
 
   return (
-    <div className="flex items-center justify-center min-h-screen p-4 w-full absolute top-0 z-50">
+    <div className="flex items-center justify-center min-h-screen p-4 w-full absolute top-5 z-50">
       <div className="relative w-full max-w-xl p-6 bg-white rounded-xl shadow-lg border border-gray-200">
         {/* Close Button */}
         <button 

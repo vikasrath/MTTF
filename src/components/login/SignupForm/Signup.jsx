@@ -1,11 +1,19 @@
 "use client";
 
-import axios from 'axios';
+import varifyEmail from '@/utils/emailVarification';
 import React, { useState } from 'react';
 
 function Signup() {
     const [passwordsMatch, setPasswordsMatch] = useState(true);
     const [loading, setLoading] = useState(false);
+    const [sentOtp, setSentOtp] = useState(false)
+    const [getOtp, setGetOtp] = useState("")
+    const [generatedOTP, setgeneratedOTP] = useState(null)
+    const [otpBtndisabled, setOtpBtndisabled] = useState(false)
+    const [paymentBtnDisable, setpaymentBtnDisable] = useState(true)
+    const [otpMassage, setOtpMassage] = useState("")
+
+
 
     const [formData, setFormData] = useState({
         fullName: "",
@@ -16,6 +24,58 @@ function Signup() {
         membershipType: "individual",
         institutionalamount: undefined,
     });
+
+
+    const sendOTP = async () => {
+        setLoading(true);
+        try {
+            const generateOtp = await varifyEmail(formData.email);
+            setgeneratedOTP(String(generateOtp));
+            setSentOtp(true);
+            setOtpBtndisabled(true);
+            setpaymentBtnDisable(false);
+        } catch (error) {
+            console.error("Error sending OTP:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const verifyOTPAndPayment = async () => {
+        if(!getOtp){
+            setOtpMassage("Please Fill OTP");
+            return;
+        }
+        if (generatedOTP !== getOtp) {
+            setOtpMassage("Please Fill Correct OTP");
+            setpaymentBtnDisable(true);
+            return;
+        }
+
+        setOtpMassage("OTP Verified Successfully");
+        setpaymentBtnDisable(false);
+
+        try {
+            let response = await fetch('/api/initiate-payment', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData),
+            });
+
+            const data = await response.json();
+
+            if (data.paymentUrl) {
+                window.location.href = data.paymentUrl; // Redirect to payment link
+            } else {
+                alert(data.message || "Payment initiation failed");
+            }
+        } catch (error) {
+            console.error("Error submitting form", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
 
 
     const handleConfirmPasswordChange = (e) => {
@@ -42,39 +102,11 @@ function Signup() {
         }
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setLoading(true);
 
-        try {
-
-            let response = await fetch('/api/initiate-payment', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(formData)
-            })
-
-            const data = await response.json();
-
-            if (data.paymentUrl) {
-                window.location.href = data.paymentUrl; // Redirect to Cashfree payment link
-            } else {
-                alert(data.message || "Payment initiation failed");
-            }
-
-        } catch (error) {
-            console.log("Error submitting form", error);
-        } finally {
-            setLoading(false);
-        }
-
-    }
 
     return (
         <>
-            <form onSubmit={handleSubmit} className="space-y-4 max-h-[65vh] overflow-auto px-2 [scrollbar-width:thin] [scrollbar-color:#d1d5db_#f3f4f6]">
+            <div className="space-y-4 max-h-[65vh] overflow-auto px-2 [scrollbar-width:thin] [scrollbar-color:#d1d5db_#f3f4f6]">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                     <div>
                         <label className="block text-sm font-medium text-gray-700">Full Name</label>
@@ -108,6 +140,8 @@ function Signup() {
                         onChange={handleChange("email")}
                     />
                 </div>
+                
+
 
                 <div>
                     <label className="block text-sm font-medium text-gray-700">Membership Type</label>
@@ -173,13 +207,52 @@ function Signup() {
                         className={`w-full p-1 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-gray-400 transition placeholder-gray-400 ${passwordsMatch ? "border-gray-300" : "border-red-500"
                             }`}
                     />
-                    {!passwordsMatch && <p className="text-sm text-red-500">Passwords do not match.</p>}
+                    {otpMassage && <p>{otpMassage}</p>}
                 </div>
+                {sentOtp && (
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700">OTP</label>
+                        <input
+                            value={getOtp}
+                            type="text"
+                            placeholder="Enter 4 digit OTP"
+                            required
+                            className="w-full p-1 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-gray-400 transition placeholder-gray-400"
+                            onChange={(e) => setGetOtp(e.target.value)}
+                        />
+                        <div >
+                            {generatedOTP === getOtp ? 
+                            <p className=' text-green-500'>OTP Varified Successfully</p>
+                             : <p className=' text-red-500'>Please Fill Correct OTP</p>}
+                              </div>
+                    </div>
 
-                <button type='submit' className="w-full bg-blue-600 text-white p-3 rounded-lg font-semibold hover:bg-blue-700 transition-all">
-                    {formData.membershipType === "individual" ? 2000 : formData.institutionalamount}  Pay Now
+                )}
+
+                <button
+                    onClick={sendOTP}
+                    disabled={otpBtndisabled}
+                    className={`w-full text-white p-3 rounded-lg font-semibold transition-all 
+        ${otpBtndisabled
+                            ? "bg-gray-400 cursor-not-allowed"
+                            : "bg-blue-600 hover:bg-blue-700"}`}
+                >
+                    Send OTP to Email
                 </button>
-            </form>
+
+                <button
+                    onClick={verifyOTPAndPayment}
+                    disabled={paymentBtnDisable}
+                    className={`w-full text-white p-3 rounded-lg font-semibold transition-all 
+                            ${paymentBtnDisable
+                            ? "bg-gray-400 cursor-not-allowed"
+                            : "bg-green-600 hover:bg-green-700"}`}
+                >
+                   {otpMassage === "Please Fill OTP" ? otpMassage : `Verify OTP and Pay now ${formData.membershipType === "individual" ? 2000 : formData.institutionalamount}`}
+                </button>
+
+
+            </div>
         </>
     );
 }
