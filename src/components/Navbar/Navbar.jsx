@@ -4,15 +4,14 @@ import Link from 'next/link';
 import { FaBars, FaTimes } from 'react-icons/fa';
 import Logo from '../Logo/Logo';
 import NavbarMobileMenu from './NavbarMobileMenu';
-import NavbarPopup from './NavbarPopup';
+import PopupBox from '../Navbar/PopupBox/PopupBox';
 import navItems from './../../../public/assets/navitems';
-
 
 const Navbar = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
     const [isPopupOpen, setIsPopupOpen] = useState(false);
-    const [popupContent, setPopupContent] = useState('');
+    const [popupContent, setPopupContent] = useState(null);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -22,21 +21,22 @@ const Navbar = () => {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
-    const openPopup = (content) => {
-        setPopupContent(content);
+    const openPopup = (contentKey) => {
+        setPopupContent(navItems[contentKey]); // Pass correct data
         setIsPopupOpen(true);
     };
 
     const closePopup = () => {
         setIsPopupOpen(false);
-        setPopupContent('');
+        setPopupContent(null);
     };
 
     return (
-        <div className='h-fit block' >
+        <div className='h-fit block'>
             <nav
-                className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${isScrolled || isMenuOpen ? 'bg-[#1C2330] shadow-lg' : 'bg-transparent'
-                    }`}
+                className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
+                    isScrolled || isMenuOpen ? 'bg-[#1C2330] shadow-lg' : 'bg-transparent'
+                }`}
             >
                 <div className="max-w-7xl mx-auto px-6 lg:px-12 flex items-center justify-between py-4">
                     {/* Logo */}
@@ -94,8 +94,9 @@ const Navbar = () => {
                 {/* Mobile Menu */}
                 <NavbarMobileMenu isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} navItems={navItems} />
             </nav>
-                {/* Full-Screen Popup */}
-                {isPopupOpen && <NavbarPopup popupContent={popupContent} closePopup={closePopup} navItems={navItems}/>}
+
+            {/* PopupBox - Replacing NavbarPopup */}
+            {isPopupOpen && <PopupBox linkBox={popupContent} closeIcon={closePopup} />}
         </div>
     );
 };

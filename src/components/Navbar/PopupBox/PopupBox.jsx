@@ -1,33 +1,47 @@
 import React from 'react';
 import Link from 'next/link';
-
+import { IoClose } from 'react-icons/io5';
+import {motion} from "motion/react"
 
 function PopupBox({ linkBox, closeIcon }) {
     return (
-        <div className="absolute  w-full h-screen top-24 shadow-lg border-t-2 border-white z-10">
-            <div className="bg-gradient-to-r px-4 lg:px-24 from-[#252a3d] to-[#3f4957] w-full h-full relative ">
+        <motion.div
+        
+        initial={{ opacity: 0 , height: 0 }}
+        animate={{ opacity: 1 , height: 'auto', }}
+        transition={{ duration: 0.5 }}
+        
+        className="fixed inset-0 z-50 flex items-start pt-20 bg-black bg-opacity-50 transition-opacity animate-fadeIn ">
+            <div className="w-full max-w-6xl mx-auto bg-[#121826] shadow-2xl border-t-4 border-white-500 py-12 px-6 lg:px-16 relative rounded-lg">
                 
+                {/* Close Button */}
                 <button
-                    className="absolute top-4 right-6 text-white text-[50px] font-bold hover:text-gray-300 transition duration-200"
+                    className="absolute top-5 right-5 text-white text-4xl hover:text-gray-300 transition duration-200"
                     onClick={() => closeIcon(null)}
                 >
-                    &times;
+                    <IoClose />
                 </button>
 
-                <div className="p-6 flex flex-wrap justify-center gap-8 max-w-6xl mx-auto ">
+                {/* Links Container */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 text-white">
                     {linkBox.map((category, index) => (
-                        <div key={index} className="flex-1 min-w-[200px] text-white  space-y-4">
+                        <div key={index} className="space-y-4">
+                            
+                            {/* Category Heading */}
                             {category.links && (
-                                <h3 className="text-2xl font-semibold">{category.heading}</h3>
+                                <h3 className="text-xl font-semibold  font-mono text-white-400 uppercase border-b-2 border-gray-600 pb-2">
+                                    {category.heading}
+                                </h3>
                             )}
                             
-                            <ul className="space-y-2  ">
+                            {/* Links */}
+                            <ul className="space-y-3">
                                 {category.links ? (
                                     category.links.map((link, linkIndex) => (
-                                        <li key={linkIndex} className="   transition-transform duration-200">
+                                        <li key={linkIndex}>
                                             <Link
-                                                href={link.path}
-                                                className="block text-[17px]  text-white hover:bg-gray-800 p-2 rounded-md transition-colors duration-200"
+                                                href={link.path ? link.path : '#' }
+                                                className="block text-lg text-white-300 hover:text-blue-400 hover:translate-x-1 transition duration-200"
                                                 onClick={() => closeIcon(null)}
                                             >
                                                 {link.linkName}
@@ -35,10 +49,10 @@ function PopupBox({ linkBox, closeIcon }) {
                                         </li>
                                     ))
                                 ) : (
-                                    <li className="transition-transform duration-200">
+                                    <li>
                                         <Link
                                             href={category.link}
-                                            className="block text-white hover:bg-gray-800 p-2 rounded-md transition-colors duration-200"
+                                            className="block text-lg text-gray-300 hover:text-white hover:translate-x-1 transition duration-200"
                                             onClick={() => closeIcon({ whatWeDo: false, whatWeThink: false, whoWeAre: false })}
                                         >
                                             {category.heading}
@@ -50,7 +64,7 @@ function PopupBox({ linkBox, closeIcon }) {
                     ))}
                 </div>
             </div>
-        </div>
+        </motion.div>
     );
 }
 
