@@ -94,7 +94,7 @@ const NavbarPopup = ({ popupContent, closePopup, navItems }) => {
                         >
                           <div className="flex items-center space-x-3">
                             <FaLink className="text-gray-600 mr-4" />
-                            {link.linkName}
+                            {/* {link.linkName} */}
                           </div>
                         </motion.div>
                       </Link>
