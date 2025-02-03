@@ -11,7 +11,7 @@ function PopupBox({ linkBox, closeIcon }) {
         animate={{ opacity: 1 , height: 'auto', }}
         transition={{ duration: 0.5 }}
         
-        className="fixed inset-0 z-50 flex items-start pt-20 bg-black bg-opacity-50 transition-opacity animate-fadeIn ">
+        className="fixed inset-0 z-40 flex items-start pt-20 bg-black bg-opacity-50 transition-opacity animate-fadeIn ">
             <div className="w-full max-w-6xl mx-auto bg-[#121826] shadow-2xl border-t-4 border-white-500 py-12 px-6 lg:px-16 relative rounded-lg">
                 
                 {/* Close Button */}
