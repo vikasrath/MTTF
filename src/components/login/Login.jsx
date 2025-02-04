@@ -1,7 +1,7 @@
 import Signup from "./SignupForm/Signup";
 import { useState } from "react";
 import { FaTimes } from "react-icons/fa"; // Importing the close icon from react-icons
-import Login from "./LoginForm/Login";
+import Login from "./LoginForm/Login.jsx";
 
 export default function AuthPage({ setAuth, auth }) {
   const [isSignUp, setIsSignUp] = useState(false);
