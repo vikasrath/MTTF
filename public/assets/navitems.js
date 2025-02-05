@@ -63,7 +63,6 @@ const navItems = {
     ],
 
     whoWeAre: [
-    
         {
             heading: "Our Organisation",
             links: [
