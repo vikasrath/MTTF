@@ -1,7 +1,7 @@
-import Login from "./loginForm/login";
 import Signup from "./SignupForm/Signup";
 import { useState } from "react";
 import { FaTimes } from "react-icons/fa"; // Importing the close icon from react-icons
+import Login from "./LoginForm/Login.jsx";
 
 export default function AuthPage({ setAuth, auth }) {
   const [isSignUp, setIsSignUp] = useState(false);
@@ -21,7 +21,7 @@ export default function AuthPage({ setAuth, auth }) {
           {isSignUp ? "Create an Account" : "Welcome Back"}
         </h2>
 
-        {isSignUp ? <Signup /> : <Login />}
+        {isSignUp ? <Signup /> : <Login/>}
 
         <p className="text-sm text-center text-gray-600 mt-4">
           {isSignUp ? "Already have an account?" : "Don't have an account?"}
