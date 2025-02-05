@@ -12,6 +12,8 @@ function Signup() {
     const [generatedOTP, setgeneratedOTP] = useState(null)
     const [otpMassage, setOtpMassage] = useState("")
     const [otpBtnMsg, setotpBtnMsg] = useState("Verify Email")
+    const [countdown, setCountdown] = useState(0);
+
 
 
 
@@ -25,44 +27,76 @@ function Signup() {
         institutionalamount: undefined,
     });
 
+    const startTiming = () => {
+        const timer = setInterval(() => {
+            setCountdown(prev => {
+                if (prev <= 1) {
+                    clearInterval(timer);
+                    setotpBtnMsg("Send OTP")
+                    setOtpMassage("")
+                    return 0;
+                }
+                return prev - 1;
+            });
+        }, 1000);
 
-    const sendOTP = async () => {
+    }
+
+    const SendOTP = async () => {
+
+        try {
+            const generateOtp = await varifyEmail(formData.email);
+            setgeneratedOTP(String(generateOtp));
+            setSentOtp(true);
+            setotpBtnMsg("Submit")
+
+        } catch (error) {
+            console.error("Error sending OTP:", error);
+        } finally {
+            setLoading(false);
+        }
+
+    }
+
+
+    const handleOTP = async () => {
 
         if (!formData.email) {
-            alert("Please enter email address");
+            setOtpMassage("Please Enter Email Address");
             return;
         }
 
-        if (otpBtnMsg === "Verify Email") {
-            setotpBtnMsg("Submit")
+        if (otpBtnMsg === "Verify Email" || otpBtnMsg === "Send OTP") {   // it will send OTP
+            setOtpMassage("OTP sent to your email address");
             setLoading(true);
-            try {
-                const generateOtp = await varifyEmail(formData.email);
-                setgeneratedOTP(String(generateOtp));
-                setSentOtp(true);
+            SendOTP();
 
-            } catch (error) {
-                console.error("Error sending OTP:", error);
-            } finally {
-                setLoading(false);
-            }
         }
 
-        if (otpBtnMsg === "Submit") {
+        if (otpBtnMsg === "Submit") {       // it will verify OTP
             if (!getOtp) {
                 setOtpMassage("Please Fill OTP");
                 return;
             }
             if (generatedOTP !== getOtp) {
-                setOtpMassage("Please Fill Correct OTP");
+                setOtpMassage("OTP is not correct");
+                setotpBtnMsg("Resend OTP")
+                setCountdown(60);
+                startTiming();
+                setOtpMassage("Please wait for a second")
+                setGetOtp("")
                 return;
             }
 
             setOtpMassage("OTP Verified Successfully");
             setverified(true)
+            setGetOtp("")
+
         }
 
     };
+
+
 
     const PayNow = async () => {
         if (!verified) {
@@ -169,28 +203,25 @@ function Signup() {
                             className="w-full p-1 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-gray-400 transition placeholder-gray-400"
                             onChange={(e) => setGetOtp(e.target.value)}
                         />
-
                     </div>
 
                 )}
 
                 <button
-                    onClick={sendOTP}
-                    disabled={verified}
+                    onClick={handleOTP}
+                    disabled={verified || otpBtnMsg === "Resend OTP"}
                     className={`w-[30%] text-white p-1 rounded-lg font-semibold transition-all 
-                             ${verified
-                            ? "bg-gray-400 cursor-not-allowed"
-                            : "bg-green-600 hover:bg-green-700"}`}
+                     ${verified || otpBtnMsg === "Resend OTP" ? "bg-gray-400 cursor-not-allowed" : "bg-green-600 hover:bg-green-700"}`}
                 >
-                    {otpBtnMsg}
+                    {countdown > 0 ? `Resend in ${countdown}s` : otpBtnMsg}
                 </button>
 
                 {otpMassage &&
-                 <div>{otpMassage ? 
-                 <p className=' text-green-700'>OTP Verified Successfully</p>
-                 : 
-                 <p className=' text-red-700'>OTP Verified Successfully</p>}
-                 </div>}
+                    <div>{otpMassage === "OTP Verified Successfully" || otpMassage === "OTP sent to your email address" ?
+                        <p className='  font-semibold text-green-700'>{otpMassage}</p>
+                        :
+                        <p className='  font-semibold text-red-700'>{otpMassage}</p>}
+                    </div>}
 
                 <div>
                     <label className="block text-sm font-medium text-gray-700">Membership Type</label>
@@ -269,8 +300,10 @@ function Signup() {
                             ? "bg-gray-400 cursor-not-allowed"
                             : "bg-green-600 hover:bg-green-700"}`}
                 >
-                    {` Pay now ${formData.membershipType === "individual" ? 2000 : formData.institutionalamount}`}
-                    
+                    {loading
+                        ? "Loading..."
+                        : `Pay now ₹${formData.membershipType === "individual" ? 2000 : formData.institutionalamount}`
+                    }
                 </button>
 
 
