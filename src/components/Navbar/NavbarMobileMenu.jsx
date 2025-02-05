@@ -1,14 +1,20 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa'; // Import dropdown icons
+import AuthPage from '../login/Login';
 
 const NavbarMobileMenu = ({ isMenuOpen, setIsMenuOpen, navItems }) => {
+  const [auth, setAuth] = useState(false);
   const [expandedSection, setExpandedSection] = useState(null);
 
   // Function to toggle the expansion of sections
   const toggleSection = (section) => {
     setExpandedSection(expandedSection === section ? null : section);
   };
+
+  const handelAuth = () => {
+    setAuth((prev) => !prev);
+  }
 
   useEffect(() => {
     if (isMenuOpen) {
@@ -26,8 +32,8 @@ const NavbarMobileMenu = ({ isMenuOpen, setIsMenuOpen, navItems }) => {
   if (!isMenuOpen) return null;
 
   return (
-    <div className="lg:hidden absolute top-full left-0 w-full bg-gray-900 py-6 max-h-[88vh] overflow-y-auto">
-      <div className="flex flex-col px-4 space-y-4">
+    <div className={`lg:hidden absolute top-full left-0 w-full bg-gray-900 py-6 max-h-[88vh] overflow-y-auto ${auth && "bg-black/30"}`}>
+      <div className={`flex flex-col px-4 space-y-4 ${auth && "opacity-0"}`}>
         <Link
           href="/"
           onClick={() => setIsMenuOpen(false)}
@@ -62,14 +68,24 @@ const NavbarMobileMenu = ({ isMenuOpen, setIsMenuOpen, navItems }) => {
                         {sectionItem.heading}
                       </h3>
                       {sectionItem.links.map((link, idx) => (
-                        <Link
-                          key={idx}
-                          href={link.path}
-                          onClick={() => setIsMenuOpen(false)}
-                          className="text-gray-200 text-lg font-medium hover:text-blue-400 transition block ml-10"
-                        >
-                          {link.linkName}
-                        </Link>
+                        link.linkName == "Login" ? <>
+                        <div
+                            key={idx}
+                            onClick={() => handelAuth()}
+                            className="text-gray-200 text-lg font-medium hover:text-blue-400 transition block ml-10"
+                          >
+                            {link.linkName}
+                          </div>
+                        </> : <>
+                          <Link
+                            key={idx}
+                            href={link.path}
+                            onClick={() => setIsMenuOpen(false)}
+                            className="text-gray-200 text-lg font-medium hover:text-blue-400 transition block ml-10"
+                          >
+                            {link.linkName}
+                          </Link>
+                        </>
                       ))}
                     </div>
                   ))}
@@ -87,6 +103,7 @@ const NavbarMobileMenu = ({ isMenuOpen, setIsMenuOpen, navItems }) => {
           Contact
         </Link>
       </div>
+      {auth && <AuthPage setAuth={setAuth} />}
     </div>
   );
 };
