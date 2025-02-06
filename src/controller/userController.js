@@ -1,13 +1,11 @@
 "use server"
 
+import { generateTokenAndSetCookie } from "@/utils/generateTokenAndSetCookie.js";
 import User from "../Model/user.js";
 import dbConnect from "../lib/dbConnect.js";
 import { hashPassword, comparePassword } from "../utils/hashPassword.js";
-import jwt from "jsonwebtoken";
-import { cookies } from "next/headers";
 
 export const createUser = async ({ name, email, phone, orderId, password }) => {
-
   await dbConnect();
 
   const hashedPassword = await hashPassword(password);
@@ -22,8 +20,9 @@ export const createUser = async ({ name, email, phone, orderId, password }) => {
     });
 
     await newUser.save();
-    await  loginUser({ email, password });
-    return  newUser;
+    
+    generateTokenAndSetCookie(newUser);  
+    return newUser;
 
   } catch (error) {
     console.error("Error creating user:", error);
@@ -32,35 +31,21 @@ export const createUser = async ({ name, email, phone, orderId, password }) => {
 };
 
 export const loginUser = async ({ email, password }) => {
-  const cookie = cookies();
   await dbConnect();
 
   const existingUser = await User.findOne({ email });
 
   if (!existingUser) {
-    return {error: "Invalid Email or Password" };
+    return { error: "Invalid Email or Password" };
   }
 
   const isMatch = await comparePassword(password, existingUser.password);
 
   if (!isMatch) {
-    return "Invalid Email or Password";
+    return { error: "Invalid Email or Password" };
   }
 
-  const token = jwt.sign({ id: existingUser._id }, process.env.JWT_SECRET, {
-    expiresIn: "45d",
-  });
+  generateTokenAndSetCookie(existingUser);  // Corrected to use existingUser
 
-  cookie.set("token", token, {
-    httpOnly: true, 
-    
-    sameSite: "Strict", 
-    maxAge: 45 * 24 * 60 * 60,
-});
-
-console.log("cookie", cookie);
-
-
-  return  { status : "ok", message: "Login successfully", user: existingUser };
-
+  return { status: "ok", message: "Login successful", user: existingUser };
 }
