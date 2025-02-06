@@ -1,5 +1,8 @@
 import axios from "axios";
-import {createUser} from "@/controller/userController";
+import { generateTokenAndSetCookie } from "@/utils/generateTokenAndSetCookie";
+import { hashPassword } from "@/utils/hashPassword";
+import User from "@/Model/user";
+
 export async function POST(req) {
 
   const body = await req.json();
@@ -11,8 +14,23 @@ export async function POST(req) {
   const orderId = `order_${Date.now()}`;
 
   try {
-    const newUser = await createUser({ name: fullName, email, phone, orderId, password });
-    console.log(" user created", newUser);
+
+    const hashedPassword = await hashPassword(password);
+
+    // Creating a new user
+    const newUser = new User({
+      name: fullName,
+      email,
+      phone,
+      orderId,
+      password: hashedPassword,
+    });
+
+    // Saving the new user to the database
+    await newUser.save();
+  console.log("newUser",newUser);
+    generateTokenAndSetCookie(newUser);
+
 
     const cashfreeResponse = await axios.post(
       "https://api.cashfree.com/pg/orders",

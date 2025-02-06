@@ -108,7 +108,7 @@ function Signup() {
             let response = await fetch('/api/initiate-payment', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData),
+                body: JSON.stringify(formData)
             });
 
             const data = await response.json();

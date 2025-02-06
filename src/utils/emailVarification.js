@@ -25,7 +25,6 @@ const verifyEmail = async (email) => {
         });
 
         if (response.ok) {
-            // alert('Verification email sent successfully!');
            return otp_code;
         } else {
             const errorData = await response.json();

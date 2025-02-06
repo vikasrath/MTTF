@@ -1,4 +1,3 @@
-import { loginUser } from '@/controller/userController';
 import React, { useState } from 'react'
 
 function Login() {
@@ -23,8 +22,19 @@ function Login() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-    
-      const response =  await loginUser({ email: formData.email, password: formData.password });
+    console.log(formData);
+        
+    const response = await fetch('/api/auth/login', { 
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+        }),
+      });
+      
 
         const data = await response.json();
 
