@@ -34,8 +34,7 @@ function Login() {
           password: formData.password,
         }),
       });
-      
-
+      setFormData({email : "", password: ""})
         const data = await response.json();
 
         if (data.error) {
@@ -50,7 +49,13 @@ function Login() {
         <form onSubmit={handleSubmit} className="space-y-4 max-h-[65vh] overflow-auto px-2">
                 <div>
                     <label className="block text-sm font-medium text-gray-700">Email</label>
-                    <input type="email" placeholder="example@email.com" required className="w-full p-1 border border-gray-300 rounded-lg shadow-xs focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-gray-400 transition placeholder-gray-400" onChange={handleChange("email")} />
+                    <input 
+                    value={formData.email}
+                     type="email" 
+                     placeholder="example@email.com" 
+                     required 
+                     className="w-full p-1 border border-gray-300 rounded-lg shadow-xs focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-gray-400 transition placeholder-gray-400" 
+                     onChange={handleChange("email")} />
                 </div>
                 <div>
                     <label className="block text-sm font-medium text-gray-700">Password</label>

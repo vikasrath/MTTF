@@ -2,9 +2,11 @@ import axios from "axios";
 import { generateTokenAndSetCookie } from "@/utils/generateTokenAndSetCookie";
 import { hashPassword } from "@/utils/hashPassword";
 import User from "@/Model/user";
+import dbConnect from "@/lib/dbConnect";
 
 export async function POST(req) {
 
+  await dbConnect()
   const body = await req.json();
 
   const { fullName, email, phone, password, membershipType, institutionalamount } = body;
