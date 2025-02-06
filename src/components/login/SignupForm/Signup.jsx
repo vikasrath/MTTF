@@ -83,7 +83,6 @@ function Signup() {
                 setotpBtnMsg("Resend OTP")
                 setCountdown(60);
                 startTiming();
-                setOtpMassage("Please wait for a second")
                 setGetOtp("")
                 return;
             }
