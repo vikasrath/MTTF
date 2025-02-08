@@ -69,7 +69,7 @@ export async function POST(req) {
         }
 
         // 🌍 Adjust currency based on country
-        const currency = country === "IN" ? "INR" : "USD";
+        const currency = country === "IN" ? "USD" : "INR";
 
         // Create payment order with Cashfree
         const cashfreeResponse = await axios.post(
