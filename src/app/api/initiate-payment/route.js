@@ -20,15 +20,10 @@ export async function POST(req) {
             );
         }
 
-        // Determine membership amount
-        const amount = membershipType === "individual" ? 2000 : Number(institutionalamount);
-        const orderId = `order_${Date.now()}`;
-
-        // 🌍 Get country info (Vercel provides it directly)
+        // 🌍 Detect Country (First Try Vercel, Then IP)
         let country = req.geo?.country || "Unknown";
 
-        // 🖥️ Fallback for local development (Use IP geolocation API only in development)
-        if (country === "Unknown" && process.env.NODE_ENV === "development") {
+        if (country === "Unknown") {
             try {
                 const ip = req.headers.get("x-forwarded-for")?.split(",")[0] || "8.8.8.8";
                 const geoRes = await fetch(`https://ipapi.co/${ip}/json/`);
@@ -40,6 +35,10 @@ export async function POST(req) {
         }
 
         console.log("Detected Country:", country);
+
+        // Determine membership amount
+        const amount = membershipType === "individual" ? 2000 : Number(institutionalamount);
+        const orderId = `order_${Date.now()}`;
 
         // Hash the user's password
         const hashedPassword = await hashPassword(password);
