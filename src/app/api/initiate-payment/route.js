@@ -20,18 +20,20 @@ export async function POST(req) {
             );
         }
 
-        // 🌍 Detect Country (First Try Vercel, Then IP)
-        let country = req.geo?.country || "Unknown";
+        // 🌍 Detect Country via IP-based Geolocation
+        let country = "Unknown";
+        try {
+            // Get client IP (Vercel uses x-forwarded-for)
+            const ip = req.headers.get("x-forwarded-for")?.split(",")[0] || "8.8.8.8";
+            console.log("Detected IP:", ip);
 
-        if (country === "Unknown") {
-            try {
-                const ip = req.headers.get("x-forwarded-for")?.split(",")[0] || "8.8.8.8";
-                const geoRes = await fetch(`https://ipapi.co/${ip}/json/`);
-                const geoData = await geoRes.json();
-                country = geoData.country || "Unknown";
-            } catch (geoError) {
-                console.error("Failed to fetch country info:", geoError.message);
-            }
+            // Use IPInfo for geolocation (Replace with your API token stored in .env)
+            const geoRes = await fetch(`https://ipinfo.io/${ip}/json?token=${process.env.IPINFO_TOKEN}`);
+            const geoData = await geoRes.json();
+
+            country = geoData.country || "Unknown";
+        } catch (geoError) {
+            console.error("Failed to fetch country info:", geoError.message);
         }
 
         console.log("Detected Country:", country);
