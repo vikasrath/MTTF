@@ -13,6 +13,8 @@ function Signup() {
     const [otpMassage, setOtpMassage] = useState("")
     const [otpBtnMsg, setotpBtnMsg] = useState("Verify Email")
     const [countdown, setCountdown] = useState(0);
+     const [error, setError] = useState("")
+     const [payLoeading,setPayLoading] = useState(false)
 
 
 
@@ -43,20 +45,29 @@ function Signup() {
     }
 
     const SendOTP = async () => {
-
         try {
-            const generateOtp = await varifyEmail(formData.email);
-            setgeneratedOTP(String(generateOtp));
             setSentOtp(true);
-            setotpBtnMsg("Submit")
-
+             
+            let response = await fetch('/api/auth/otp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: formData.email }) 
+            });
+    
+            const data = await response.json(); 
+    
+            if ( data.message === "OTP sent successfully") {
+                setOtpMassage("OTP sent successfully");
+                setgeneratedOTP(String(data.otp)); 
+                setotpBtnMsg("Submit");
+            } else {
+                setOtpMassage(data.message);
+            }
         } catch (error) {
-            console.error("Error sending OTP:", error);
-        } finally {
-            setLoading(false);
+            setError(error.message || "Error sending OTP");
         }
-
-    }
+    };
+    
 
 
     const handleOTP = async () => {
@@ -66,11 +77,9 @@ function Signup() {
             return;
         }
 
-        if (otpBtnMsg === "Verify Email" || otpBtnMsg === "Send OTP") {   // it will send OTP
-            setOtpMassage("OTP sent to your email address");
+        if (otpBtnMsg === "Verify Email" || otpBtnMsg === "Send OTP") { 
             setLoading(true);
-            SendOTP();
-
+            await SendOTP();
         }
 
         if (otpBtnMsg === "Submit") {       // it will verify OTP
@@ -78,7 +87,7 @@ function Signup() {
                 setOtpMassage("Please Fill OTP");
                 return;
             }
-            if (generatedOTP !== getOtp) {
+            if (String(generatedOTP) !== String(getOtp))  {
                 setOtpMassage("OTP is not correct");
                 setotpBtnMsg("Resend OTP")
                 setCountdown(60);
@@ -104,7 +113,7 @@ function Signup() {
         }
 
         try {
-            setLoading(true);
+            setPayLoading(true);
             let response = await fetch('/api/initiate-payment', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -208,7 +217,7 @@ function Signup() {
 
                 <button
                     onClick={handleOTP}
-                    disabled={verified || otpBtnMsg === "Resend OTP"}
+                    disabled={verified || otpBtnMsg === "Resend OTP" }
                     className={`w-[30%] text-white p-1 rounded-lg font-semibold transition-all 
                      ${verified || otpBtnMsg === "Resend OTP" ? "bg-gray-400 cursor-not-allowed" : "bg-green-600 hover:bg-green-700"}`}
                 >
@@ -299,7 +308,7 @@ function Signup() {
                             ? "bg-gray-400 cursor-not-allowed"
                             : "bg-green-600 hover:bg-green-700"}`}
                 >
-                    {loading
+                    {payLoeading
                         ? "Loading..."
                         : `Pay now ₹${formData.membershipType === "individual" ? 2000 : formData.institutionalamount}`
                     }
