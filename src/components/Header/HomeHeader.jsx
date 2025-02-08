@@ -17,7 +17,7 @@ function HomeHeader() {
         <source src={introVideo} type="video/mp4" />
         Your browser does not support the video tag.
       </video>
-      <div className="absolute inset-0 bg-black bg-opacity-75 flex items-center justify-center">
+      <div className="absolute inset-0 bg-black bg-opacity-75 flex items-center justify-center overflow-hidden">
         <motion.div
           className="text-center text-white px-4 sm:px-8"
           initial="hidden"
