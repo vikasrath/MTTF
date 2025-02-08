@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { FaBars, FaTimes } from 'react-icons/fa';
+import { FaBars, FaTimes,FaUserCircle} from 'react-icons/fa';
 import Logo from '../Logo/Logo';
 import NavbarMobileMenu from './NavbarMobileMenu';
 import PopupBox from '../Navbar/PopupBox/PopupBox';
@@ -78,6 +78,15 @@ const Navbar = () => {
                         >
                             Contact
                         </Link>
+
+                        <Link
+                            href="/profile"
+                            className="text-white text-lg font-medium hover:text-blue-400 transition"
+                           
+                        >
+                            <FaUserCircle className="text-2xl" />
+                        </Link>
+                        
                     </div>
 
                     {/* Hamburger Menu */}
