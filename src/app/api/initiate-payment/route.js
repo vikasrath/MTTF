@@ -24,16 +24,19 @@ export async function POST(req) {
         const amount = membershipType === "individual" ? 2000 : Number(institutionalamount);
         const orderId = `order_${Date.now()}`;
 
-        // Fetch IP and country information
-        const ip = req.headers.get('x-forwarded-for') || req.ip || '8.8.8.8';
-        let country = "Unknown";
+        // 🌍 Get country info (Vercel provides it directly)
+        let country = req.geo?.country || "Unknown";
 
-        try {
-            const geoRes = await fetch(`https://ipapi.co/${ip}/json/`);
-            const geoData = await geoRes.json();
-            country = geoData.country || "Unknown";
-        } catch (geoError) {
-            console.error("Failed to fetch country info:", geoError.message);
+        // 🖥️ Fallback for local development (Use IP geolocation API only in development)
+        if (country === "Unknown" && process.env.NODE_ENV === "development") {
+            try {
+                const ip = req.headers.get("x-forwarded-for")?.split(",")[0] || "8.8.8.8";
+                const geoRes = await fetch(`https://ipapi.co/${ip}/json/`);
+                const geoData = await geoRes.json();
+                country = geoData.country || "Unknown";
+            } catch (geoError) {
+                console.error("Failed to fetch country info:", geoError.message);
+            }
         }
 
         console.log("Detected Country:", country);
@@ -43,11 +46,12 @@ export async function POST(req) {
 
         // Create a new user in the database
         const newUser = new User({
-          name: fullName,
-          email,
-          phone,
-          orderId,
-          password: hashedPassword,
+            name: fullName,
+            email,
+            phone,
+            orderId,
+            password: hashedPassword,
+            country, // Store country info
         });
 
         await newUser.save();
@@ -63,13 +67,16 @@ export async function POST(req) {
             );
         }
 
+        // 🌍 Adjust currency based on country
+        const currency = country === "IN" ? "INR" : "USD";
+
         // Create payment order with Cashfree
         const cashfreeResponse = await axios.post(
             "https://api.cashfree.com/pg/orders",
             {
                 orderId: orderId,
                 order_amount: amount,
-                order_currency: country === "IN" ? "INR" : "USD",
+                order_currency: currency,
                 customer_details: {
                     customer_id: newUser._id,
                     customer_phone: phone,
