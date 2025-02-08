@@ -53,7 +53,7 @@ function Footer() {
           <div>
             <h3 className="text-xl font-semibold text-white mb-4">Contact Us</h3>
             <ul className="space-y-3">
-              {["contactus@mttf.in", "+91-896-829-4003", "+1-336-493-9643"].map((item, idx) => (
+              {["contactus@mttf.in","2048 Canyon Creek Ct, Aurora, IL 60503, USA", "+1-336-493-9643"].map((item, idx) => (
                 <li key={idx}>
                   {item.includes("@") ? (
                     <a href={`mailto:${item}`} className="hover:text-white transition duration-300">
