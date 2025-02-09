@@ -29,8 +29,9 @@ function Signup() {
         const fetchCountry = async () => {
             try {
                 const res = await fetch("http://ip-api.com/json/");
-                if (!res.ok) throw new alert("Failed to fetch country");
 
+                console.log(res);
+                
                 const data = await res.json();
                 if (!data.country) throw new alert("Failed to fetch country");
 
