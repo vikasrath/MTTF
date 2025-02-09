@@ -1,15 +1,17 @@
+"use server"
 import mongoose from "mongoose";
 
-const dbConnect = async (MONGO_URI) => {
+const dbConnect = async () => {
 
-  
+  const MONGODB_URI = process.env.MONGODB_URI
+
   if (mongoose.connection.readyState >= 1) {
     console.log("Already connected to MongoDB.");
     return;
   }
 
   try {
-    await mongoose.connect(MONGO_URI, {
+    await mongoose.connect(MONGODB_URI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });

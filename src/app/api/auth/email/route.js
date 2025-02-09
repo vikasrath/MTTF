@@ -3,7 +3,7 @@ import User from "@/Model/user";
 import dbConnect from "@/lib/dbConnect";
 export async function POST(req) {
 
-    await dbConnect(process.env.MONGODB_URI);
+    await dbConnect();
 
 
     const body = await req.json();
