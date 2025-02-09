@@ -30,9 +30,9 @@ function Signup() {
             try {
                 const res = await fetch("http://ip-api.com/json/");
 
-                console.log(res);
                 
                 const data = await res.json();
+                console.log(data);
                 if (!data.country) throw new alert("Failed to fetch country");
 
                 setFormData((prev) => ({ ...prev, country: data.countryCode, institutionalamount: data.countryCode == "IN" ? 2000 : 17558 }));
