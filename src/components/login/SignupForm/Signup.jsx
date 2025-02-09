@@ -9,7 +9,10 @@ function Signup() {
     const [verified, setVerified] = useState("pending"); // marks the current state for Email verification
     const [OTP, setOTP] = useState("") // stores OTP entered by user
     const [verifiedOTP, setVerifiedOTP] = useState(undefined) // stores otp send to gmail
-    const {payLoading, payNow, error} = usePayment() // custom hook to initiate payment
+    const { payLoading, payNow, error } = usePayment() // custom hook to initiate payment
+    const [loading, setLoading] = useState(false) // handels loading for resend OTP button
+    const [timeLeft, setTimeLeft] = useState(120) // handel timer for resend OTP
+    const [disabled, setDisabled] = useState(true) // handels state for resend OTP button
 
     const [formData, setFormData] = useState({
         fullName: "",
@@ -27,10 +30,10 @@ function Signup() {
             try {
                 const res = await fetch("http://ip-api.com/json/");
                 if (!res.ok) throw new alert("Failed to fetch country");
-        
+
                 const data = await res.json();
                 if (!data.country) throw new alert("Failed to fetch country");
-        
+
                 setFormData((prev) => ({ ...prev, country: data.countryCode, institutionalamount: data.countryCode == "IN" ? 2000 : 17558 }));
             } catch (error) {
                 alert("Error fetching country");
@@ -40,15 +43,32 @@ function Signup() {
         fetchCountry();
     }, []); // detect the country of user
 
+    useEffect(() => {
+        let timer;
+        if (timeLeft > 0) {
+          timer = setInterval(() => {
+            setTimeLeft((prev) => prev - 1);
+          }, 1000);
+        } else if (timeLeft === 0 && disabled) {
+          setDisabled(false); // Re-enable button when timer ends
+        }
+    
+        return () => clearInterval(timer);
+      }, [timeLeft, disabled]);
+
     const handelVarified = async (status) => {
         if (status === "pending" && formData.email.includes("@gmail.com")) {
+            setTimeLeft(120)
+            setDisabled(true)
             // if OTP verification is pending mark it to in progress and send OTP
-            setVerified("processing");
             try {
+                setLoading(true)
                 const opt = await SendOTP(setVerified, formData.email);
                 setVerifiedOTP(opt);
             } catch (error) {
                 alert("Failed to send OTP");
+            } finally {
+                setLoading(false)
             }
         } else if (status === "processing") {
             // if OPT verification is already processing mark it to pending which mean user is editing email
@@ -56,16 +76,19 @@ function Signup() {
         } else if (status === "verified" && OTP.toString() === verifiedOTP.toString()) {
             // if user wants to verify OTP it will compare OTP and mark verification to verified
             setVerified("verified");
+        } else if (status === "verified" && OTP.toString() !== verifiedOTP.toString()) {
+            // if user wants to verify OTP it will compare OTP and mark verification to verified
+            setVerified("not");
         } else {
             //invalid gamil entered or posibally some error occured
             alert("Enter a valid Gmail");
         }
     }; // check whats the current status for OTP verification
 
-    const handleConfirmPasswordChange = (e) => {
+    const handlePasswordChange = (field)=> (e) => {
         const value = e.target.value;
         setFormData((prev) => {
-            const updatedFormData = { ...prev, confirmPassword: value };
+            const updatedFormData = { ...prev, [field]: value };
             setPasswordsMatch(updatedFormData.confirmPassword === updatedFormData.password);
             return updatedFormData;
         });
@@ -86,15 +109,16 @@ function Signup() {
         }
     }; // manages membership type
 
-    const handelSubmit = ()=> {
-        if (verified !== "verified") {
-            return  
+    const handelSubmit = () => {
+        if (verified !== "verified" || formData.fullName == "" || formData.phone == "" || !passwordsMatch || formData.password !== "") {
+            alert("All fields are required")
+            return
         } else {
             payNow(formData)
         }
     } // handels form submission
 
-    if(error) {
+    if (error) {
         alert(error)
     } // alert if any error
 
@@ -129,17 +153,18 @@ function Signup() {
                 {/* email */}
                 <div>
                     <label className="block text-sm font-medium text-gray-700">Email</label>
-                    <div className='flex border border-gray-300 rounded-lg shadow-sm  focus:border-transparent'>
+                    <div className='flex rounded-lg shadow-sm  focus:border-transparent'>
                         <input
                             type="email"
                             placeholder="example@gmail.com"
                             required
-                            className="w-full p-1 hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-l-lg transition placeholder-gray-400"
+                            className="w-full p-1 hover:border-gray-400 focus:outline-none border border-gray-300 focus:border-blue-500 rounded-l-lg transition placeholder-gray-400"
                             onChange={handleChange("email")}
-                            disabled={verified !== "pending" || verified == "not"}
+                            disabled={!["pending", "not", "notAvailable"].includes(verified)}
                         />
-                        <button className='border-l-2 px-5 bg-blue-500 text-white rounded-r-lg' disabled={verified == "verified"} onClick={() => handelVarified(verified == "pending" ? "pending" : "processing")}>
-                            {verified === "pending" ? "Verify" : verified === "verified" ? <MdOutlineVerifiedUser /> : "Edit"}
+
+                        <button className={`bg-blue-500 text-white rounded-r-lg px-5 border-gray-200 ${verified == "verified" && "bg-green-600"}`} disabled={verified == "verified"} onClick={() => handelVarified(verified == "pending" || verified == "not" || verified == "notAvailable" ? "pending" : "processing")}>
+                            {(verified === "pending" && loading) || (verified === "notAvailable" && loading) || (verified === "not" && loading) ? <div className="h-5 w-5 rounded-full border-4 border-t-gray-300  border-gray-50 animate-spin"></div> : verified == "pending" || verified == "notAvailable" || verified == "not" ? "verify" : verified === "verified" ? <MdOutlineVerifiedUser /> : "Edit"}
                         </button>
                     </div>
                 </div>
@@ -161,7 +186,15 @@ function Signup() {
                             <button className='px-5 bg-green-600 text-white' onClick={() => handelVarified("verified")}>
                                 check
                             </button>
-                            <button className='bg-blue-500 text-white rounded-r-lg px-5 border-l border-gray-200'>Resend</button>
+                            <button
+                                className={`bg-blue-500 text-white rounded-r-lg px-5 border-l border-gray-200 transition ${disabled ? "bg-gray-400 cursor-not-allowed" : "hover:bg-blue-600"
+                                    }`}
+                                disabled={disabled}
+                                onClick={()=> {handelVarified("pending")}}
+                            >
+                                {disabled ? `${timeLeft}s` : "Resend"}
+                            </button>
+
                         </div>
                     </div>
                 }
@@ -217,7 +250,7 @@ function Signup() {
                         placeholder="••••••••"
                         required
                         value={formData.password}
-                        onChange={handleChange("password")}
+                        onChange={handlePasswordChange("password")}
                         className="w-full p-1 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-gray-400 transition placeholder-gray-400"
                     />
                 </div>
@@ -229,14 +262,14 @@ function Signup() {
                         placeholder="••••••••"
                         required
                         value={formData.confirmPassword}
-                        onChange={handleConfirmPasswordChange}
+                        onChange={handlePasswordChange("confirmPassword")}
                         className={`w-full p-1 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-gray-400 transition placeholder-gray-400 ${passwordsMatch ? "border-gray-300" : "border-red-500"
                             }`}
                     />
                 </div>
 
                 {/* submit button */}
-                <button disabled={verified !== "verified"} className={`w-full text-white p-3 rounded-lg font-semibold transition-all ${verified !== "verified" ? "bg-gray-400 cursor-not-allowed" : "bg-green-600 hover:bg-green-700"}`} onClick={handelSubmit} >
+                <button disabled={verified !== "verified" || formData.fullName == "" || formData.phone == "" || !passwordsMatch || formData.password !== ""} className={`w-full text-white p-3 rounded-lg font-semibold transition-all ${verified !== "verified" || formData.fullName == "" || formData.phone == "" || !passwordsMatch || formData.password !== "" ? "bg-gray-400 cursor-not-allowed" : "bg-green-600 hover:bg-green-700"}`} onClick={handelSubmit} >
                     {payLoading ? "Loading...." : `Pay ${formData.institutionalamount}`}
                 </button>
             </div>

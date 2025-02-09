@@ -30,6 +30,8 @@ const SendOTP = async (setVerified, email) => {
                 body: JSON.stringify(messageData),
             });
 
+            setVerified("processing");
+
             return otp_code
         } else {
             setVerified("notAvailable")
