@@ -35,7 +35,7 @@ function Signup() {
                 console.log(data);
                 if (!data.country) throw new alert("Failed to fetch country");
 
-                setFormData((prev) => ({ ...prev, country: data.countryCode, institutionalamount: data.countryCode == "IN" ? 2000 : 17558 }));
+                setFormData((prev) => ({ ...prev, country: data.countryCode, institutionalamount: data.country == "IN" ? 2000 : 17558 }));
             } catch (error) {
                 alert("Error fetching country");
             }
