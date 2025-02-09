@@ -11,7 +11,7 @@ export async function POST(req) {
 
         // Parse the request body
         const body = await req.json();
-        const { fullName, email, phone, password, membershipType, institutionalamount } = body;
+        const { fullName, email, phone, password, membershipType, institutionalamount, country } = body;
 
         if (!fullName || !email || !phone || !password || !membershipType) {
             return new Response(
@@ -20,26 +20,8 @@ export async function POST(req) {
             );
         }
 
-        // 🌍 Detect Country via IP-based Geolocation
-        let country = "Unknown";
-        try {
-            // Get client IP (Vercel uses x-forwarded-for)
-            const ip = req.headers.get("x-forwarded-for")?.split(",")[0] || "8.8.8.8";
-            console.log("Detected IP:", ip);
-
-            // Use IPInfo for geolocation (Replace with your API token stored in .env)
-            const geoRes = await fetch(`https://ipinfo.io/${ip}/json?token=${process.env.IPINFO_TOKEN}`);
-            const geoData = await geoRes.json();
-
-            country = geoData.country || "Unknown";
-        } catch (geoError) {
-            console.error("Failed to fetch country info:", geoError.message);
-        }
-
-        console.log("Detected Country:", country);
-
         // Determine membership amount
-        const amount = membershipType === "individual" ? 2000 : Number(institutionalamount);
+        const amount = Number(institutionalamount);
         const orderId = `order_${Date.now()}`;
 
         // Hash the user's password
@@ -69,7 +51,7 @@ export async function POST(req) {
         }
 
         // 🌍 Adjust currency based on country
-        const currency = country === "IN" ? "INR" : "USD";
+        const currency = country !== "IN" ? "USD" : "INR";
 
         // Create payment order with Cashfree
         const cashfreeResponse = await axios.post(

@@ -1,15 +1,23 @@
 "use client";
-import React, { useEffect, useState } from 'react';
-import { MdOutlineVerifiedUser } from "react-icons/md";
-import SendOTP from './sendOTP';
-import usePayment from './payNow';
+
+import varifyEmail from '@/utils/emailVarification';
+import React, { useState } from 'react';
 
 function Signup() {
-    const [passwordsMatch, setPasswordsMatch] = useState(true); // manages whether password and confirm password matches
-    const [verified, setVerified] = useState("pending"); // marks the current state for Email verification
-    const [OTP, setOTP] = useState("") // stores OTP entered by user
-    const [verifiedOTP, setVerifiedOTP] = useState(undefined) // stores otp send to gmail
-    const {payLoading, payNow, error} = usePayment() // custom hook to initiate payment
+    const [verified, setverified] = useState(false)
+    const [passwordsMatch, setPasswordsMatch] = useState(true);
+    const [loading, setLoading] = useState(false);
+    const [sentOtp, setSentOtp] = useState(false)
+    const [getOtp, setGetOtp] = useState("")
+    const [generatedOTP, setgeneratedOTP] = useState(null)
+    const [otpMassage, setOtpMassage] = useState("")
+    const [otpBtnMsg, setotpBtnMsg] = useState("Verify Email")
+    const [countdown, setCountdown] = useState(0);
+     const [error, setError] = useState("")
+     const [payLoeading,setPayLoading] = useState(false)
+
+
+
 
     const [formData, setFormData] = useState({
         fullName: "",
@@ -18,49 +26,115 @@ function Signup() {
         password: "",
         confirmPassword: "",
         membershipType: "individual",
-        institutionalamount: 2000,
-        country: ""
-    }); // manages all the form data
+        institutionalamount: undefined,
+    });
 
-    useEffect(() => {
-        const fetchCountry = async () => {
-            try {
-                const res = await fetch("http://ip-api.com/json/");
-                if (!res.ok) throw new alert("Failed to fetch country");
-        
-                const data = await res.json();
-                if (!data.country) throw new alert("Failed to fetch country");
-        
-                setFormData((prev) => ({ ...prev, country: data.countryCode, institutionalamount: data.countryCode == "IN" ? 2000 : 17558 }));
-            } catch (error) {
-                alert("Error fetching country");
+    const startTiming = () => {
+        const timer = setInterval(() => {
+            setCountdown(prev => {
+                if (prev <= 1) {
+                    clearInterval(timer);
+                    setotpBtnMsg("Send OTP")
+                    setOtpMassage("")
+                    return 0;
+                }
+                return prev - 1;
+            });
+        }, 1000);
+
+    }
+
+    const SendOTP = async () => {
+        try {
+            setSentOtp(true);
+             
+            let response = await fetch('/api/auth/otp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: formData.email }) 
+            });
+    
+            const data = await response.json(); 
+    
+            if ( data.message === "OTP sent successfully") {
+                setOtpMassage("OTP sent successfully");
+                setgeneratedOTP(String(data.otp)); 
+                setotpBtnMsg("Submit");
+            } else {
+                setOtpMassage(data.message);
             }
-        };
-
-        fetchCountry();
-    }, []); // detect the country of user
-
-    const handelVarified = async (status) => {
-        if (status === "pending" && formData.email.includes("@gmail.com")) {
-            // if OTP verification is pending mark it to in progress and send OTP
-            setVerified("processing");
-            try {
-                const opt = await SendOTP(setVerified, formData.email);
-                setVerifiedOTP(opt);
-            } catch (error) {
-                alert("Failed to send OTP");
-            }
-        } else if (status === "processing") {
-            // if OPT verification is already processing mark it to pending which mean user is editing email
-            setVerified("pending");
-        } else if (status === "verified" && OTP.toString() === verifiedOTP.toString()) {
-            // if user wants to verify OTP it will compare OTP and mark verification to verified
-            setVerified("verified");
-        } else {
-            //invalid gamil entered or posibally some error occured
-            alert("Enter a valid Gmail");
+        } catch (error) {
+            setError(error.message || "Error sending OTP");
         }
-    }; // check whats the current status for OTP verification
+    };
+    
+
+
+    const handleOTP = async () => {
+
+        if (!formData.email) {
+            setOtpMassage("Please Enter Email Address");
+            return;
+        }
+
+        if (otpBtnMsg === "Verify Email" || otpBtnMsg === "Send OTP") { 
+            setLoading(true);
+            await SendOTP();
+        }
+
+        if (otpBtnMsg === "Submit") {       // it will verify OTP
+            if (!getOtp) {
+                setOtpMassage("Please Fill OTP");
+                return;
+            }
+            if (String(generatedOTP) !== String(getOtp))  {
+                setOtpMassage("OTP is not correct");
+                setotpBtnMsg("Resend OTP")
+                setCountdown(60);
+                startTiming();
+                setGetOtp("")
+                return;
+            }
+
+            setOtpMassage("OTP Verified Successfully");
+            setverified(true)
+            setGetOtp("")
+
+        }
+
+    };
+
+
+
+    const PayNow = async () => {
+        if (!verified) {
+            alert("Please verify OTP");
+            return;
+        }
+
+        try {
+            setPayLoading(true);
+            let response = await fetch('/api/initiate-payment', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData)
+            });
+
+            const data = await response.json();
+
+            if (data.paymentUrl) {
+                window.location.href = data.paymentUrl; // Redirect to payment link
+            } else {
+                alert(data.message || "Payment initiation failed");
+            }
+        } catch (error) {
+            console.error("Error submitting form", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+
 
     const handleConfirmPasswordChange = (e) => {
         const value = e.target.value;
@@ -69,40 +143,29 @@ function Signup() {
             setPasswordsMatch(updatedFormData.confirmPassword === updatedFormData.password);
             return updatedFormData;
         });
-    }; // checks if password and confirm password matches
+    };
 
     const handleChange = (field) => (e) => {
         setFormData((prev) => ({
             ...prev,
             [field]: e.target.value,
         }));
-    }; // handel change in any input field
+    };
 
     const handelMembershipType = (type) => {
         if (type === "individual") {
-            setFormData({ ...formData, membershipType: "individual", institutionalamount: 2000 });
+            setFormData({ ...formData, membershipType: "individual", institutionalamount: undefined });
         } else {
             setFormData({ ...formData, membershipType: "institutional", institutionalamount: 50000 });
         }
-    }; // manages membership type
+    };
 
-    const handelSubmit = ()=> {
-        if (verified !== "verified") {
-            return  
-        } else {
-            payNow(formData)
-        }
-    } // handels form submission
 
-    if(error) {
-        alert(error)
-    } // alert if any error
 
     return (
         <>
             <div className="space-y-4 max-h-[65vh] overflow-auto px-2 [scrollbar-width:thin] [scrollbar-color:#d1d5db_#f3f4f6]">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-                    {/* full name */}
                     <div>
                         <label className="block text-sm font-medium text-gray-700">Full Name</label>
                         <input
@@ -113,7 +176,6 @@ function Signup() {
                             onChange={handleChange("fullName")}
                         />
                     </div>
-                    {/* phone number */}
                     <div>
                         <label className="block text-sm font-medium text-gray-700">Phone</label>
                         <input
@@ -126,48 +188,49 @@ function Signup() {
                     </div>
                 </div>
 
-                {/* email */}
                 <div>
                     <label className="block text-sm font-medium text-gray-700">Email</label>
-                    <div className='flex border border-gray-300 rounded-lg shadow-sm  focus:border-transparent'>
-                        <input
-                            type="email"
-                            placeholder="example@gmail.com"
-                            required
-                            className="w-full p-1 hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-l-lg transition placeholder-gray-400"
-                            onChange={handleChange("email")}
-                            disabled={verified !== "pending" || verified == "not"}
-                        />
-                        <button className='border-l-2 px-5 bg-blue-500 text-white rounded-r-lg' disabled={verified == "verified"} onClick={() => handelVarified(verified == "pending" ? "pending" : "processing")}>
-                            {verified === "pending" ? "Verify" : verified === "verified" ? <MdOutlineVerifiedUser /> : "Edit"}
-                        </button>
-                    </div>
+                    <input
+                        type="email"
+                        placeholder="example@email.com"
+                        required
+                        className="w-full p-1 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-gray-400 transition placeholder-gray-400"
+                        onChange={handleChange("email")}
+                    />
                 </div>
 
-                {/* OTP verification */}
-                {verified === "processing" &&
-                    <div>
-                        <p className='text-green-700 text-sm'>OTP sent to your email address</p>
-                        <label className="block text-sm font-medium text-gray-700">OTP</label>
-                        <div className='flex rounded-lg shadow-sm  focus:border-transparent'>
-                            <input
-                                value={OTP}
-                                type="number"
-                                placeholder="Enter 4 digit OTP"
-                                required
-                                className="w-full p-1 hover:border-gray-400 focus:outline-none border border-gray-300  focus:border-blue-500 rounded-l-lg transition placeholder-gray-400 mr-0"
-                                onChange={(e) => setOTP(e.target.value)}
-                            />
-                            <button className='px-5 bg-green-600 text-white' onClick={() => handelVarified("verified")}>
-                                check
-                            </button>
-                            <button className='bg-blue-500 text-white rounded-r-lg px-5 border-l border-gray-200'>Resend</button>
-                        </div>
-                    </div>
-                }
-                <p className='text-sm text-red-600'> {verified == "not" ? "OTP entered is not Correct" : verified == "notAvailable" ? "email already in use" : ""}</p>
 
-                {/* membership type */}
+                {sentOtp && (
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700">OTP</label>
+                        <input
+                            value={getOtp}
+                            type="text"
+                            placeholder="Enter 4 digit OTP"
+                            required
+                            className="w-full p-1 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-gray-400 transition placeholder-gray-400"
+                            onChange={(e) => setGetOtp(e.target.value)}
+                        />
+                    </div>
+
+                )}
+
+                <button
+                    onClick={handleOTP}
+                    disabled={verified || otpBtnMsg === "Resend OTP" }
+                    className={`w-[30%] text-white p-1 rounded-lg font-semibold transition-all 
+                     ${verified || otpBtnMsg === "Resend OTP" ? "bg-gray-400 cursor-not-allowed" : "bg-green-600 hover:bg-green-700"}`}
+                >
+                    {countdown > 0 ? `Resend in ${countdown}s` : otpBtnMsg}
+                </button>
+
+                {otpMassage &&
+                    <div>{otpMassage === "OTP Verified Successfully" || otpMassage === "OTP sent to your email address" ?
+                        <p className='  font-semibold text-green-700'>{otpMassage}</p>
+                        :
+                        <p className='  font-semibold text-red-700'>{otpMassage}</p>}
+                    </div>}
+
                 <div>
                     <label className="block text-sm font-medium text-gray-700">Membership Type</label>
                     <div className="grid grid-cols-2 gap-4 mt-4">
@@ -209,7 +272,6 @@ function Signup() {
                     </div>
                 )}
 
-                {/* password and confirm password */}
                 <div>
                     <label className="block text-sm font-medium text-gray-700">Password</label>
                     <input
@@ -235,10 +297,24 @@ function Signup() {
                     />
                 </div>
 
-                {/* submit button */}
-                <button disabled={verified !== "verified"} className={`w-full text-white p-3 rounded-lg font-semibold transition-all ${verified !== "verified" ? "bg-gray-400 cursor-not-allowed" : "bg-green-600 hover:bg-green-700"}`} onClick={handelSubmit} >
-                    {payLoading ? "Loading...." : `Pay ${formData.institutionalamount}`}
+
+
+
+                <button
+                    onClick={PayNow}
+                    disabled={!verified}
+                    className={`w-full text-white p-3 rounded-lg font-semibold transition-all 
+                            ${!verified
+                            ? "bg-gray-400 cursor-not-allowed"
+                            : "bg-green-600 hover:bg-green-700"}`}
+                >
+                    {payLoeading
+                        ? "Loading..."
+                        : `Pay now ₹${formData.membershipType === "individual" ? 2000 : formData.institutionalamount}`
+                    }
                 </button>
+
+
             </div>
         </>
     );

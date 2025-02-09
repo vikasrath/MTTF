@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const dbConnect = async () => {
+const dbConnect = async (MONGO_URI) => {
 
   
   if (mongoose.connection.readyState >= 1) {
@@ -9,7 +9,7 @@ const dbConnect = async () => {
   }
 
   try {
-    await mongoose.connect("mongodb+srv://devanshjindal31:123456dishu@cluster0.sa2rv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0", {
+    await mongoose.connect(MONGO_URI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
