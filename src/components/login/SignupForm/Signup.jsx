@@ -28,7 +28,7 @@ function Signup() {
     useEffect(() => {
         const fetchCountry = async () => {
             try {
-                const res = await fetch("http://ip-api.com/json/");
+                const res = await fetch("https://ipinfo.io/json?token=77eb4a3b509978");
 
                 
                 const data = await res.json();
