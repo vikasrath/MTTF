@@ -20,8 +20,24 @@ const userSchema = new mongoose.Schema({
     googleScholar: { type: String },
     researchGate: { type: String },
     otherProfile: { type: String },
-})
+    deletionDate: { type: Date }, // Will be set if isMember is false
+});
 
-const User = mongoose.models.User || mongoose.model('User', userSchema);
+// Middleware to set `deletionDate` when a new user is created
+userSchema.pre("save", function (next) {
+    if (!this.isMember) {
+        this.deletionDate = new Date(Date.now() + 2 * 24 * 60 * 60 * 1000); // 2 days from now
+    } else {
+        this.deletionDate = undefined; // Members should not have a deletion date
+    }
+    next();
+});
 
+// Static method to delete expired users
+userSchema.statics.deleteExpiredUsers = async function () {
+    const result = await this.deleteMany({ isMember: false, deletionDate: { $lte: new Date() } });
+    console.log(`Deleted ${result.deletedCount} expired non-member users.`);
+};
+
+const User = mongoose.models.User || mongoose.model("User", userSchema);
 export default User;
