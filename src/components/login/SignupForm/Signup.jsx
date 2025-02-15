@@ -90,7 +90,7 @@ function Signup() {
         const value = e.target.value;
         setFormData((prev) => {
             const updatedFormData = { ...prev, [field]: value };
-            setPasswordsMatch(updatedFormData.confirmPassword === updatedFormData.password);
+            setPasswordsMatch(updatedFormData.confirmPassword == updatedFormData.password);
             return updatedFormData;
         });
     }; // checks if password and confirm password matches
@@ -111,7 +111,7 @@ function Signup() {
     }; // manages membership type
 
     const handelSubmit = () => {
-        if (verified !== "verified" || formData.fullName == "" || formData.phone == "" || !passwordsMatch || formData.password !== "") {
+        if (verified !== "verified" || formData.fullName == "" || formData.phone == "" || !passwordsMatch || formData.password == "") {
             alert("All fields are required")
             return
         } else {
@@ -270,7 +270,7 @@ function Signup() {
                 </div>
 
                 {/* submit button */}
-                <button disabled={verified !== "verified" || formData.fullName == "" || formData.phone == "" || !passwordsMatch || formData.password !== ""} className={`w-full text-white p-3 rounded-lg font-semibold transition-all ${verified !== "verified" || formData.fullName == "" || formData.phone == "" || !passwordsMatch || formData.password !== "" ? "bg-gray-400 cursor-not-allowed" : "bg-green-600 hover:bg-green-700"}`} onClick={handelSubmit} >
+                <button disabled={verified !== "verified" || formData.fullName === "" || formData.phone === "" || !passwordsMatch || formData.password == "" } className={`w-full text-white p-3 rounded-lg font-semibold transition-all ${verified !== "verified" || formData.fullName == "" || formData.phone == "" || !passwordsMatch || formData.password == "" ? "bg-gray-400 cursor-not-allowed" : "bg-green-600 hover:bg-green-700"}`} onClick={handelSubmit} >
                     {payLoading ? "Loading...." : `Pay ${formData.institutionalamount}`}
                 </button>
             </div>
