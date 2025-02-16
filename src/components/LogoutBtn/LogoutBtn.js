@@ -16,7 +16,7 @@ function LogoutBtn() {
         localStorage.removeItem("user");
         setAuthUser({})
         window.location.reload()
-        route("/")
+        route.push("/")
         console.log("Logout Successfully");
 
       } else {
