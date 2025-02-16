@@ -1,8 +1,7 @@
+"use client"
 import React, { useState } from "react";
-import { useRouter } from "next/router";
 
 function Login() {
-    const router = useRouter()
   const [resMessage, setResMessage] = useState({ error: "", message: "" });
   const [formData, setFormData] = useState({
     email: "",
@@ -36,7 +35,6 @@ function Login() {
       localStorage.setItem("user", JSON.stringify(data.user));
       setFormData({ email: "", password: "" });
       setResMessage({ message: data.message, error: "" });
-      router.push("/profile")
 
     } catch (error) {
       setResMessage({ error: error.message, message: "" });

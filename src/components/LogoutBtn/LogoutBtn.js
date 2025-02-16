@@ -1,12 +1,10 @@
-
+"use client"
 import { useAuthContext } from "@/context/authContext";
-import { useRouter } from "next/navigation";
 import React from "react";
 import { FiLogOut } from "react-icons/fi";
 
 function LogoutBtn() {
   const { setAuthUser } = useAuthContext();
-  const  router  = useRouter()
 
   const handleClick = async () => {
     try {
@@ -15,8 +13,6 @@ function LogoutBtn() {
       if (response.ok) {
         localStorage.removeItem("user");
         setAuthUser({})
-        window.location.reload()
-        router.push("/")
         console.log("Logout Successfully");
 
       } else {

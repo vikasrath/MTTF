@@ -18,7 +18,6 @@ const Navbar = () => {
     const [isScrolled, setIsScrolled] = useState(false);
     const [isPopupOpen, setIsPopupOpen] = useState(false);
     const [popupContent, setPopupContent] = useState(null);
-
     const [auth1, setAuth1] = useState(false)
 
     const handelAuth = () => {
