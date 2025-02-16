@@ -1,15 +1,20 @@
 "use client";
 
-import React, { useState } from "react";
-import { FaUserCircle,FaLinkedin,FaGoogle ,FaEdit} from "react-icons/fa";
+import LogoutBtn from "@/components/LogoutBtn/LogoutBtn";
+import { useAuthContext } from "@/context/authContext";
+import React, { useState, useEffect } from "react";
+import { FaUserCircle, FaLinkedin, FaGoogle, FaEdit } from "react-icons/fa";
 
 const Profile = () => {
+  const { authUser, setAuthUser } = useAuthContext();
+  console.log("userdata", authUser);
+
   const [user, setUser] = useState({
-    name: "Mehar Chand",
-    email:"vikasrathote01322@gmail.com",
-    memberId: "MTTF2103495",
-    registrationDate: "2024-04-20",
-    phone: "7009191019",
+    name: "",
+    email: "",
+    memberId: "",
+    registrationDate: "",
+    phone: "",
     department: "",
     university: "",
     jobTitle: "",
@@ -20,21 +25,27 @@ const Profile = () => {
     linkedin: "",
     googleScholar: "",
     researchGate: "",
-    otherProfile: ""
+    otherProfile: "",
   });
-  
+
   const [isEditing, setIsEditing] = useState(false);
   const [updatedUser, setUpdatedUser] = useState(user);
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
+
+  // Populate user state with authUser data when component mounts
+  useEffect(() => {
+    if (authUser) {
+      setUser(authUser);
+      setUpdatedUser(authUser);
+    }
+  }, [authUser]);
 
   const handleChange = (e) => {
     setUpdatedUser({ ...updatedUser, [e.target.name]: e.target.value });
   };
 
   const handleUpdate = async () => {
-    setUser(updatedUser);
-    setIsEditing(false);
-    setLoading(true)
+    setLoading(true);
 
     try {
       const response = await fetch("/api/user/updateprofile", {
@@ -45,20 +56,16 @@ const Profile = () => {
 
       const data = await response.json();
       if (response.ok) {
-          setUser(data.user);
+        localStorage.setItem("user", JSON.stringify(data.user));
+        setUser(data.user);
+        setAuthUser(data.user); // Update authUser globally
+        setIsEditing(false);
       }
-      
-
     } catch (error) {
-      console.log(error)
+      console.log(error);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-
-
-
-
-
   };
 
   return (
@@ -70,52 +77,85 @@ const Profile = () => {
           <span className="tracking-wide">Profile Dashboard</span>
         </header>
         <div className="flex flex-col md:flex-row flex-1 p-4 md:p-6 gap-6">
+          {/* User Info */}
           <aside className="w-full md:w-1/3 bg-white p-4 md:p-6 shadow-xl rounded-lg border border-gray-300">
             <h2 className="text-lg md:text-xl font-semibold text-gray-800 border-b-2 pb-3">User Info</h2>
             <ul className="mt-5 space-y-4 text-gray-700">
-              <li><strong>Name:</strong> {user.name}</li>
-              <li><strong>Email:</strong> {user.email}</li>
-              <li><strong>Member ID:</strong> {user.memberId}</li>
-              <li><strong>Registration Date:</strong> {user.registrationDate}</li>
-              <li> <strong>Phone:</strong> {user.phone}</li>
-              <li> <strong>Department:</strong> {user.department}</li>
-              <li><strong>University:</strong> {user.university}</li>
-              <li><strong>Department:</strong> {user.jobTitle}</li>
-              <li><strong>Research Field:</strong> {user.researchField}</li>
-              <li><strong>Technical Experience:</strong> {user.technicalExperience}</li>
-              <li><strong>Teaching Experience:</strong> {user.teachingExperience}</li>
-              <li><strong>Research Experience:</strong> {user.researchExperience}</li>
-              <li><FaLinkedin className="inline text-blue-600" /> <a href={user.linkedin} target="_blank" className="hover:underline text-blue-700">LinkedIn</a></li>
-              <li><FaGoogle className="inline text-red-500" /> <a href={user.googleScholar} target="_blank" className="hover:underline text-red-600">Google Scholar</a></li>
-              <li><strong>ResearchGate:</strong> <a href={user.researchGate} target="_blank" className="hover:underline text-blue-700">Profile</a></li>
-              <li><strong>Other Profile:</strong> <a href={user.otherProfile} target="_blank" className="hover:underline text-blue-700">Profile</a></li>
+              <li><strong>Name:</strong> {user.name || ""}</li>
+              <li><strong>Email:</strong> {user.email || ""}</li>
+              <li><strong>Member ID:</strong> {user.memberId || ""}</li>
+              <li><strong>Registration Date:</strong> {user.registrationDate || ""}</li>
+              <li><strong>Phone:</strong> {user.phone || ""}</li>
+              <li><strong>Department:</strong> {user.department || ""}</li>
+              <li><strong>University:</strong> {user.university || ""}</li>
+              <li><strong>Job Title:</strong> {user.jobTitle || ""}</li>
+              <li><strong>Research Field:</strong> {user.researchField || ""}</li>
+              <li><strong>Technical Experience:</strong> {user.technicalExperience || ""}</li>
+              <li><strong>Teaching Experience:</strong> {user.teachingExperience || ""}</li>
+              <li><strong>Research Experience:</strong> {user.researchExperience || ""}</li>
+              <li>
+                <FaLinkedin className="inline text-blue-600" />
+                {user.linkedin ? (
+                  <a href={user.linkedin} target="_blank" className="hover:underline text-blue-700">LinkedIn</a>
+                ) : ""}
+              </li>
+              <li>
+                <FaGoogle className="inline text-red-500" />
+                {user.googleScholar ? (
+                  <a href={user.googleScholar} target="_blank" className="hover:underline text-red-600">Google Scholar</a>
+                ) : ""}
+              </li>
+              <li>
+                <strong>ResearchGate:</strong>
+                {user.researchGate ? (
+                  <a href={user.researchGate} target="_blank" className="hover:underline text-blue-700">Profile</a>
+                ) : ""}
+              </li>
+              <li>
+                <strong>Other Profile:</strong>
+                {user.otherProfile ? (
+                  <a href={user.otherProfile} target="_blank" className="hover:underline text-blue-700">Profile</a>
+                ) : ""}
+              </li>
             </ul>
+
             <button onClick={() => setIsEditing(true)} className="mt-5 bg-yellow-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-yellow-600 w-full flex items-center justify-center gap-2 border border-yellow-700 transition-all">
               <FaEdit /> Edit Profile
             </button>
+            <div className=" p-4 pl-0">
+            <LogoutBtn />
+            </div>
           </aside>
 
+          {/* Update Profile */}
           <main className="w-full md:flex-1 bg-white p-4 md:p-6 shadow-lg rounded-lg border border-gray-300">
             <h2 className="text-lg md:text-xl font-semibold text-gray-800 mb-4 border-b-2 pb-3">Update Profile</h2>
             {isEditing ? (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {Object.keys(user).map((key) => (
-                  <div key={key}>
-                    <label className="block text-gray-600 mb-1">{key.replace(/([A-Z])/g, ' $1').trim()}</label>
-                    <input
-                      disabled={["email", "memberId", "registrationDate", "phone"].includes(key)}
-                      type="text"
-                      name={key}
-                      value={updatedUser[key]}
-                      onChange={handleChange}
-                      className="w-full p-3 border border-gray-400 rounded-lg focus:ring-2 focus:ring-indigo-500 bg-gray-50"
-                      placeholder={key.replace(/([A-Z])/g, ' $1').trim()}
-                    />
-                  </div>
+                 <div key={key}>
+                 <label className="block text-gray-600 mb-1">
+                   {key.replace(/([A-Z])/g, " $1").trim()}
+                 </label>
+                 <input
+                   disabled={["email", "memberId", "registrationDate", "phone"].includes(key)}
+                   type="text"
+                   name={key}
+                   value={updatedUser[key] || ""}
+                   onChange={handleChange}
+                   className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-indigo-500 
+                     ${["email", "memberId", "registrationDate", "phone"].includes(key) 
+                       ? "bg-gray-200 text-gray-500 cursor-not-allowed border-gray-300"
+                       : "bg-gray-50 border-gray-400"}`}
+                   placeholder={key.replace(/([A-Z])/g, " $1").trim()}
+                 />
+               </div>
+               
                 ))}
                 <button
-                  onClick={handleUpdate} className="col-span-1 md:col-span-2 bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition border border-green-800 text-lg w-full">
-                  Save Changes {loading && "loading..."}
+                  onClick={handleUpdate}
+                  className="col-span-1 md:col-span-2 bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition border border-green-800 text-lg w-full">
+                  {loading ? "Saving..." : "Save Changes"}
                 </button>
               </div>
             ) : (
@@ -124,6 +164,7 @@ const Profile = () => {
           </main>
         </div>
       </div>
+     
     </>
   );
 };

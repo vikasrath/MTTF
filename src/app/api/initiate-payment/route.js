@@ -3,6 +3,7 @@ import { generateTokenAndSetCookie } from "@/utils/generateTokenAndSetCookie";
 import { hashPassword } from "@/utils/hashPassword";
 import User from "@/Model/user";
 import dbConnect from "@/lib/dbConnect";
+import { NextResponse } from "next/server";
 
 export async function POST(req) {
     try {
@@ -82,11 +83,30 @@ export async function POST(req) {
         );
 
         // Return payment link
-        return new Response(
-            JSON.stringify({ paymentUrl: cashfreeResponse.data.payment_link }),
-            { status: 200 }
-        );
+    
 
+        return NextResponse.json({
+            paymentUrl: cashfreeResponse.data.payment_link,
+            user: {
+                name: newUser.name || "",
+                memberId: newUser.memberId || "",
+                registrationDate: newUser.registrationDate || "",
+                phone: newUser.phone || "",
+                email: newUser.email || "",
+                department: newUser.department || "",
+                university: newUser.university || "",
+                jobTitle: newUser.jobTitle || "",
+                researchField: newUser.researchField || "",
+                technicalExperience: newUser.technicalExperience || "",
+                teachingExperience: newUser.teachingExperience || "",
+                researchExperience: newUser.researchExperience || "",
+                linkedin: newUser.linkedin || "",
+                googleScholar: newUser.googleScholar || "",
+                researchGate: newUser.researchGate || "",
+                otherProfile: newUser.otherProfile || ""  
+            }
+        }, { status: 200 });
+        
     } catch (error) {
         console.error("Error initiating payment:", error.response?.data || error.message);
         return new Response(

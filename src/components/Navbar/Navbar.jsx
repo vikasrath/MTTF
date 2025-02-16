@@ -1,17 +1,29 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { FaBars, FaTimes,FaUserCircle} from 'react-icons/fa';
+import { FaBars, FaTimes, FaUserCircle } from 'react-icons/fa';
 import Logo from '../Logo/Logo';
 import NavbarMobileMenu from './NavbarMobileMenu';
 import PopupBox from '../Navbar/PopupBox/PopupBox';
 import navItems from './../../../public/assets/navitems';
+import AuthPage from '../login/Login';
+import { useAuthContext } from '@/context/authContext';
+
+
+
 
 const Navbar = () => {
+    const { authUser } = useAuthContext()  // Access context
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
     const [isPopupOpen, setIsPopupOpen] = useState(false);
     const [popupContent, setPopupContent] = useState(null);
+
+    const [auth1, setAuth1] = useState(false)
+
+    const handelAuth = () => {
+        setAuth1((prev) => !prev)
+    }
 
     useEffect(() => {
         const handleScroll = () => {
@@ -34,9 +46,8 @@ const Navbar = () => {
     return (
         <div className='h-fit block'>
             <nav
-                className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
-                    isScrolled || isMenuOpen ? 'bg-[#1C2330] shadow-lg' : 'bg-transparent'
-                }`}
+                className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${isScrolled || isMenuOpen ? 'bg-[#1C2330] shadow-lg' : 'bg-transparent'
+                    }`}
             >
                 <div className="max-w-7xl mx-auto px-6 lg:px-12 flex items-center justify-between py-4">
                     {/* Logo */}
@@ -79,14 +90,22 @@ const Navbar = () => {
                             Contact
                         </Link>
 
-                        <Link
-                            href="/profile"
-                            className="text-white text-lg font-medium hover:text-blue-400 transition"
-                           
-                        >
-                            <FaUserCircle className="text-2xl" />
-                        </Link>
-                        
+
+                        {  authUser ? (
+                            <Link
+                                href="/profile"
+                                className="text-white text-lg font-medium hover:text-blue-400 transition"
+
+                            >
+                                <FaUserCircle className="text-2xl" />My Account
+                            </Link>
+                        ) : 
+                        (
+                            <button 
+                            onClick={handelAuth}
+                             className=' px-4 py-1 text-white font-bold border-2 border-white rounded-lg'>Register</button>
+                        )}
+
                     </div>
 
                     {/* Hamburger Menu */}
@@ -106,6 +125,8 @@ const Navbar = () => {
 
             {/* PopupBox - Replacing NavbarPopup */}
             {isPopupOpen && <PopupBox linkBox={popupContent} closeIcon={closePopup} />}
+             {auth1 && <AuthPage setAuth={setAuth1} />}
+
         </div>
     );
 };

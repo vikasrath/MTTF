@@ -17,6 +17,13 @@ const usePayment = () => {
 
             const data = await response.json();
 
+         console.log("data->",data);
+
+          localStorage.setItem("user", JSON.stringify(data.user));   // set user in local storage
+         
+
+            
+
             if (data.paymentUrl) {
                 window.location.href = data.paymentUrl; // Redirect to payment page
             } else {

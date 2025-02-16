@@ -6,6 +6,7 @@ export async function POST(req) {
         await dbConnect(); 
 
         const body = await req.json();
+         console.log(body)
         const {
             email, // Email se user ko identify karenge
             name,
@@ -44,9 +45,27 @@ export async function POST(req) {
             { new: true } // Updated user return karega
         );
 
+         
         return NextResponse.json({
             message: "User profile updated successfully",
-            user: updatedUser,
+            user: {
+                name: updatedUser.name || "",
+                memberId: updatedUser.memberId || "",
+                registrationDate: updatedUser.registrationDate || "",
+                phone: updatedUser.phone || "",
+                email: updatedUser.email || "",
+                department: updatedUser.department || "",
+                university: updatedUser.university || "",
+                jobTitle: updatedUser.jobTitle || "",
+                researchField: updatedUser.researchField || "",
+                technicalExperience: updatedUser.technicalExperience || "",
+                teachingExperience: updatedUser.teachingExperience || "",
+                researchExperience: updatedUser.researchExperience || "",
+                linkedin: updatedUser.linkedin || "",
+                googleScholar: updatedUser.googleScholar || "",
+                researchGate: updatedUser.researchGate || "",
+                otherProfile: updatedUser.otherProfile || ""
+            },
         }, { status: 200 });
 
     } catch (error) {
