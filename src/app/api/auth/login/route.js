@@ -43,7 +43,24 @@ export async function POST(req) {
     {
       status: "ok",
       message: "Login successful",
-      user: existingUser
+      user: {
+        name: existingUser.name || "",
+        memberId: existingUser.memberId || "",
+        registrationDate: existingUser.registrationDate || "",
+        phone: existingUser.phone || "",
+        email: existingUser.email || "",
+        department: existingUser.department || "",
+        university: existingUser.university || "",
+        jobTitle: existingUser.jobTitle || "",
+        researchField: existingUser.researchField || "",
+        technicalExperience: existingUser.technicalExperience || "",
+        teachingExperience: existingUser.teachingExperience || "",
+        researchExperience: existingUser.researchExperience || "",
+        linkedin: existingUser.linkedin || "",
+        googleScholar: existingUser.googleScholar || "",
+        researchGate: existingUser.researchGate || "",
+        otherProfile: existingUser.otherProfile || ""  
+    }
     },
     { status: 200 }
   );

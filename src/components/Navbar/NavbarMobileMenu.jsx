@@ -2,8 +2,11 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa'; // Import dropdown icons
 import AuthPage from '../login/Login';
+import { useAuthContext } from '@/context/authContext';
+import { FaUserCircle } from 'react-icons/fa';
 
 const NavbarMobileMenu = ({ isMenuOpen, setIsMenuOpen, navItems }) => {
+  const { authUser } = useAuthContext()
   const [auth, setAuth] = useState(false);
   const [expandedSection, setExpandedSection] = useState(null);
 
@@ -69,7 +72,7 @@ const NavbarMobileMenu = ({ isMenuOpen, setIsMenuOpen, navItems }) => {
                       </h3>
                       {sectionItem.links.map((link, idx) => (
                         link.linkName == "Login" ? <>
-                        <div
+                          <div
                             key={idx}
                             onClick={() => handelAuth()}
                             className="text-gray-200 text-lg font-medium hover:text-blue-400 transition block ml-10"
@@ -102,6 +105,24 @@ const NavbarMobileMenu = ({ isMenuOpen, setIsMenuOpen, navItems }) => {
         >
           Contact
         </Link>
+
+        {authUser ? (
+          <Link
+            href="/profile"
+            className="flex items-center gap-1 text-white text-lg font-medium hover:text-blue-400 transition"
+          >
+            <FaUserCircle className="text-2xl" />
+            <span>Account</span>
+          </Link>
+        ) : (
+          <button
+            onClick={handelAuth}
+            className="px-4 py-1 text-white font-bold border-2 border-white rounded-lg"
+          >
+            Register
+          </button>
+        )}
+
       </div>
       {auth && <AuthPage setAuth={setAuth} />}
     </div>

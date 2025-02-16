@@ -56,7 +56,7 @@ const Navbar = () => {
                     </div>
 
                     {/* Desktop Navigation */}
-                    <div className="hidden lg:flex space-x-8 items-center">
+                    <div className="hidden lg:flex space-x-8  items-center">
                         <Link
                             href="/"
                             className="text-white text-lg font-medium hover:text-blue-400 transition"
@@ -91,20 +91,23 @@ const Navbar = () => {
                         </Link>
 
 
-                        {  authUser ? (
+                        {authUser ? (
                             <Link
                                 href="/profile"
-                                className="text-white text-lg font-medium hover:text-blue-400 transition"
-
+                                className="flex items-center gap-1 text-white text-lg font-medium hover:text-blue-400 transition"
                             >
-                                <FaUserCircle className="text-2xl" />My Account
+                                <FaUserCircle className="text-2xl" />
+                                <span>Account</span>
                             </Link>
-                        ) : 
-                        (
-                            <button 
-                            onClick={handelAuth}
-                             className=' px-4 py-1 text-white font-bold border-2 border-white rounded-lg'>Register</button>
+                        ) : (
+                            <button
+                                onClick={handelAuth}
+                                className="px-4 py-1 text-white font-bold border-2 border-white rounded-lg"
+                            >
+                                Register
+                            </button>
                         )}
+
 
                     </div>
 
@@ -125,7 +128,7 @@ const Navbar = () => {
 
             {/* PopupBox - Replacing NavbarPopup */}
             {isPopupOpen && <PopupBox linkBox={popupContent} closeIcon={closePopup} />}
-             {auth1 && <AuthPage setAuth={setAuth1} />}
+            {auth1 && <AuthPage setAuth={setAuth1} />}
 
         </div>
     );

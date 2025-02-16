@@ -7,7 +7,6 @@ import { FaUserCircle, FaLinkedin, FaGoogle, FaEdit } from "react-icons/fa";
 
 const Profile = () => {
   const { authUser, setAuthUser } = useAuthContext();
-  console.log("userdata", authUser);
 
   const [user, setUser] = useState({
     name: "",
@@ -58,7 +57,7 @@ const Profile = () => {
       if (response.ok) {
         localStorage.setItem("user", JSON.stringify(data.user));
         setUser(data.user);
-        setAuthUser(data.user); // Update authUser globally
+        setAuthUser(data.user); 
         setIsEditing(false);
       }
     } catch (error) {

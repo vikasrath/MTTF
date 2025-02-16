@@ -91,9 +91,6 @@ const navItems = {
             heading: "Mathtech Circle",
             links: [
                 {
-                    linkName: "Login"
-                },
-                {
                     linkName: "Individual Membership",
                     path: "/whoWeAre/membership/individual"
                 },

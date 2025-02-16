@@ -6,7 +6,7 @@ import { FiLogOut } from "react-icons/fi";
 
 function LogoutBtn() {
   const { setAuthUser } = useAuthContext();
-  const  route = useRouter()
+  const  router  = useRouter()
 
   const handleClick = async () => {
     try {
@@ -16,7 +16,7 @@ function LogoutBtn() {
         localStorage.removeItem("user");
         setAuthUser({})
         window.location.reload()
-        route.push("/")
+        router.push("/")
         console.log("Logout Successfully");
 
       } else {
