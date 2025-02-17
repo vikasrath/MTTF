@@ -1,4 +1,5 @@
 'use client';
+import { Toaster } from "react-hot-toast";
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { FaBars, FaTimes, FaUserCircle } from 'react-icons/fa';
@@ -43,6 +44,7 @@ const Navbar = () => {
     };
 
     return (
+        <>
         <div className='h-fit block'>
             <nav
                 className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${isScrolled || isMenuOpen ? 'bg-[#1C2330] shadow-lg' : 'bg-transparent'
@@ -130,6 +132,8 @@ const Navbar = () => {
             {auth1 && <AuthPage setAuth={setAuth1} />}
 
         </div>
+        <Toaster position="top-center" />
+        </>
     );
 };
 

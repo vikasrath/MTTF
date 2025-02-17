@@ -1,13 +1,14 @@
 "use client";
-
 import LogoutBtn from "@/components/LogoutBtn/LogoutBtn";
 import { useAuthContext } from "@/context/authContext";
+import { useRouter } from "next/navigation";
 import React, { useState, useEffect } from "react";
+import toast from "react-hot-toast";
 import { FaUserCircle, FaLinkedin, FaGoogle, FaEdit } from "react-icons/fa";
 
 const Profile = () => {
   const { authUser, setAuthUser } = useAuthContext();
-
+  const router = useRouter();
   const [user, setUser] = useState({
     name: "",
     email: "",
@@ -33,6 +34,9 @@ const Profile = () => {
 
   // Populate user state with authUser data when component mounts
   useEffect(() => {
+    if(!authUser){
+       router.push("/")
+    }
     if (authUser) {
       setUser(authUser);
       setUpdatedUser(authUser);
@@ -59,6 +63,7 @@ const Profile = () => {
         setUser(data.user);
         setAuthUser(data.user); 
         setIsEditing(false);
+        toast.success("Profile Updated Successfully")
       }
     } catch (error) {
       console.log(error);
@@ -68,6 +73,7 @@ const Profile = () => {
   };
 
   return (
+
     <>
       <div className="bg-gray-900 h-16 md:h-20"></div>
       <div className="min-h-screen flex flex-col bg-gray-100 p-4 md:p-10">
@@ -92,14 +98,14 @@ const Profile = () => {
               <li><strong>Technical Experience:</strong> {user.technicalExperience || ""}</li>
               <li><strong>Teaching Experience:</strong> {user.teachingExperience || ""}</li>
               <li><strong>Research Experience:</strong> {user.researchExperience || ""}</li>
-              <li>
-                <FaLinkedin className="inline text-blue-600" />
+              <li className=" mt-20 ml-4 inline">
+                <FaLinkedin size={30} className="inline text-blue-600" />
                 {user.linkedin ? (
                   <a href={user.linkedin} target="_blank" className="hover:underline text-blue-700">LinkedIn</a>
                 ) : ""}
               </li>
-              <li>
-                <FaGoogle className="inline text-red-500" />
+              <li className=" ml-4 inline" >
+                <FaGoogle size={30} className="inline text-red-500" />
                 {user.googleScholar ? (
                   <a href={user.googleScholar} target="_blank" className="hover:underline text-red-600">Google Scholar</a>
                 ) : ""}
@@ -117,6 +123,8 @@ const Profile = () => {
                 ) : ""}
               </li>
             </ul>
+
+          
 
             <button onClick={() => setIsEditing(true)} className="mt-5 bg-yellow-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-yellow-600 w-full flex items-center justify-center gap-2 border border-yellow-700 transition-all">
               <FaEdit /> Edit Profile

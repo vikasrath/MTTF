@@ -1,9 +1,14 @@
 "use client"
+
+import { toast } from 'react-hot-toast';
 import { useAuthContext } from "@/context/authContext";
+import { useRouter } from "next/navigation";
 import React from "react";
 import { FiLogOut } from "react-icons/fi";
 
+
 function LogoutBtn() {
+const router =  useRouter()
   const { setAuthUser } = useAuthContext();
 
   const handleClick = async () => {
@@ -12,11 +17,12 @@ function LogoutBtn() {
 
       if (response.ok) {
         localStorage.removeItem("user");
-        setAuthUser({})
-        console.log("Logout Successfully");
+        setAuthUser(null)
+        router.push("/")
+        toast.success("Logout Successfully");
 
       } else {
-        console.error("Logout failed");
+        toast.error("Logout failed");
       }
     } catch (error) {
       console.error("Error during logout:", error);

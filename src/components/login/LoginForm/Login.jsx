@@ -1,8 +1,13 @@
 "use client"
+import { useAuthContext } from "@/context/authContext";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
+import toast from "react-hot-toast";
 
 function Login() {
-  const [resMessage, setResMessage] = useState({ error: "", message: "" });
+  const router = useRouter();
+  const {setAuthUser} = useAuthContext();
+  const [loading,setLoading] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -17,7 +22,7 @@ function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    setLoading(true)
     try {
       const response = await fetch("/api/auth/login", {
         method: "POST",
@@ -34,10 +39,14 @@ function Login() {
       }
       localStorage.setItem("user", JSON.stringify(data.user));
       setFormData({ email: "", password: "" });
-      setResMessage({ message: data.message, error: "" });
+      setAuthUser(data.user)
+      toast.success("Logged in Successfully")
+      router.push("/profile")
 
     } catch (error) {
-      setResMessage({ error: error.message, message: "" });
+      toast.error(error.message);
+    }finally{
+      setLoading(false)
     }
   };
 
@@ -66,11 +75,9 @@ function Login() {
             className="w-full p-1 border border-gray-300 rounded-lg shadow-xs focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-gray-400 transition placeholder-gray-400"
           />
         </div>
-        <button type="submit" className="w-full bg-blue-600 text-white p-3 rounded-lg font-semibold hover:bg-blue-700 transition-all">
-          Log In
+        <button type="submit" className="w-full bg-blue-600 text-white p-3 rounded-lg font-semibold hover:bg-blue-900 transition-all">
+          {loading ? "Loading...":"Log In"}
         </button>
-        {resMessage.error && <div className="text-red-500">{resMessage.error}</div>}
-        {resMessage.message && <div className="text-green-500 font-bold">{resMessage.message}</div>}
       </form>
     </>
   );

@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 
 const usePayment = () => {
@@ -17,7 +18,6 @@ const usePayment = () => {
 
             const data = await response.json();
 
-         console.log("data->",data);
 
           localStorage.setItem("user", JSON.stringify(data.user));   // set user in local storage
          
