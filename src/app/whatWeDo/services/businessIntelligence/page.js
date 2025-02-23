@@ -17,7 +17,7 @@ const BusinessIntelligence = () => {
         <>
 
             <Header
-                title="Exploring the Future of Business Intelligence"
+                title=" Business Intelligence"
                 description="Empowering businesses to unlock their full potential with Business Intelligence"
             />
 
@@ -166,9 +166,9 @@ const BusinessIntelligence = () => {
                             Contact us today to learn how our Business Intelligence solutions can empower your institution.
                         </p>
                         <div className="text-lg">
-                            <p>Email: info@[yourcompany].com</p>
-                            <p>Phone: [Your Phone Number]</p>
-                            <p>Website: [Your Website Link]</p>
+                            <p>Email: contactus@mttf.in.com</p>
+                            <p>Phone: +1-336-493-9643</p>
+                            <p>Website: mttfhub.com</p>
                         </div>
                     </footer>
                 </div>
