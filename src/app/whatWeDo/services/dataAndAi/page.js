@@ -49,7 +49,7 @@ const DataAndAiPage = () => {
         <>
 
             <Header
-                title=" Data Science and Artificial Intelligence"
+                title=" Data Science and AI"
                 description="Data and AI are revolutionizing industries through automation and smart analytics. Our platform equips you with hands-on AI skills, from machine learning to NLP, opening new career opportunities."
 
             />
