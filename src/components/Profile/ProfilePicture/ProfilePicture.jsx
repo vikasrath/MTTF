@@ -54,7 +54,7 @@ const ProfilePicture = ({ profileImage, setProfileImage }) => {
         <CldImage
           width="128"
           height="128"
-          src={authUser?.image}
+          src={authUser?.image || ""}
           alt="Profile"
           className="w-full h-full rounded-full border-4 border-gray-300 object-cover"
         />

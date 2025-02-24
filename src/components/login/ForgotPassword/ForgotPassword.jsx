@@ -145,7 +145,7 @@ function ForgotPassword({setResetPass}) {
 
             <button
                 type="submit"
-                className={`w-full bg-blue-600 text-white p-3 rounded-lg font-semibold hover:bg-blue-900 transition-all${verified == "verified" && passwordsMatch && formData.password.length > 8 ? "" : " bg-gray-400"}`}
+                className={`w-full bg-blue-600 text-white p-3 rounded-lg font-semibold hover:bg-blue-900 transition-all${verified == "verified" && passwordsMatch && formData.password.length >= 8 ? "" : " bg-gray-400"}`}
                 disabled={verified !== "verified" || !passwordsMatch || formData.password.length < 8}
             >
                 {loading ? "Loading...." : "Change Password"}
