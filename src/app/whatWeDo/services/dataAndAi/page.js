@@ -69,7 +69,7 @@ const DataAndAiPage = () => {
 
                         {/* Description */}
                         <p className="text-lg text-gray-200 mt-6 px-4">
-                            At <strong className="text-yellow-300">Math Tech Thinking Foundation</strong>, we provide hands-on training, tools, and expert knowledge in{" "}
+                            At <strong className="text-yellow-300">MathTech Thinking Foundation</strong>, we provide hands-on training, tools, and expert knowledge in{" "}
                             <strong className="text-cyan-300">Artificial Intelligence (AI)</strong>. Whether you're a student, developer, or industry professional, our platform helps you master AI and transform ideas into reality.
                         </p>
 
@@ -221,7 +221,7 @@ const DataAndAiPage = () => {
       <section className="text-center mt-16 bg-gradient-to-r from-indigo-500 to-indigo-700 text-white py-12 px-6 rounded-2xl shadow-lg max-w-4xl mx-auto">
         <h2 className="text-4xl font-bold mb-4 drop-shadow-lg">🚀 Join Us Today</h2>
         <p className="text-lg mb-6 max-w-2xl mx-auto leading-relaxed">
-          Embark on your journey to mastering Artificial Intelligence! Whether you aim to build AI-powered applications, conduct research, or innovate in the tech world, <strong className="text-yellow-300">Math Tech Thinking Foundation</strong> is your trusted partner.
+          Embark on your journey to mastering Artificial Intelligence! Whether you aim to build AI-powered applications, conduct research, or innovate in the tech world, <strong className="text-yellow-300">MathTech Thinking Foundation</strong> is your trusted partner.
         </p>
         <button className="bg-yellow-400 text-indigo-900 py-3 px-8 rounded-lg text-xl font-semibold hover:bg-yellow-500 transition duration-300 shadow-md">
           Get Started Now

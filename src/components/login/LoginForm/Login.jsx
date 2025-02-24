@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 
-function Login() {
+function Login({setAuth, setReset}) {
   const router = useRouter();
   const {setAuthUser} = useAuthContext();
   const [loading,setLoading] = useState(false);
@@ -42,11 +42,12 @@ function Login() {
       setAuthUser(data.user)
       toast.success("Logged in Successfully")
       router.push("/profile")
-
+      
     } catch (error) {
       toast.error(error.message);
     }finally{
       setLoading(false)
+      setAuth(false)
     }
   };
 
@@ -75,6 +76,15 @@ function Login() {
             className="w-full p-1 border border-gray-300 rounded-lg shadow-xs focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-gray-400 transition placeholder-gray-400"
           />
         </div>
+        <div className="text-center">
+            <button
+              type="button"
+              onClick={() => setReset(true)}
+              className="text-sm text-blue-600 hover:underline focus:outline-none"
+            >
+              Forgot Password?
+            </button>
+          </div>
         <button type="submit" className="w-full bg-blue-600 text-white p-3 rounded-lg font-semibold hover:bg-blue-900 transition-all">
           {loading ? "Loading...":"Log In"}
         </button>

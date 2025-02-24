@@ -2,9 +2,12 @@ import Signup from "./SignupForm/Signup";
 import { useState } from "react";
 import { FaTimes } from "react-icons/fa"; // Importing the close icon from react-icons
 import Login from "./LoginForm/Login.jsx";
+import ForgotPassword from "./ForgotPassword/ForgotPassword";
+import { AiOutlineArrowLeft } from "react-icons/ai";
 
 export default function AuthPage({ setAuth, auth }) {
   const [isSignUp, setIsSignUp] = useState(false);
+  const [resetPass, setResetPass] = useState(false);
 
   return (
     <div className="flex items-center justify-center min-h-screen p-4 w-full absolute top-5 z-50">
@@ -17,20 +20,25 @@ export default function AuthPage({ setAuth, auth }) {
           <FaTimes size={24} />
         </button>
 
+        {resetPass && <button onClick={() => setResetPass(false)} className="text-blue-600 font-large ml-1 hover:underline">
+        <AiOutlineArrowLeft className="text-2xl" />
+          </button>}
+
         <h2 className="text-2xl font-bold text-center text-gray-800 mb-4">
-          {isSignUp ? "Create an Account" : "Welcome Back"}
+          {resetPass? "Reset Password" : isSignUp ? "Create an Account" : "Welcome Back"}
         </h2>
 
-        {isSignUp ? <Signup /> : <Login/>}
+        {resetPass? <ForgotPassword setResetPass={setResetPass} /> : isSignUp ? <Signup setAuth={setAuth} /> : <Login setAuth={setAuth} setReset={setResetPass}/>}
 
-        <p className="text-sm text-center text-gray-600 mt-4">
+        {!resetPass && <p className="text-sm text-center text-gray-600 mt-4">
           {isSignUp ? "Already have an account?" : "Don't have an account?"}
           <button
             onClick={() => setIsSignUp(!isSignUp)}
             className="text-blue-600 font-medium ml-1 hover:underline">
             {isSignUp ? "Sign In" : "Sign Up"}
           </button>
-        </p>
+        </p> }
+        
       </div>
     </div>
   );

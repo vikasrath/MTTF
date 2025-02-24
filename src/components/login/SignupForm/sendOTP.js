@@ -8,33 +8,14 @@ const SendOTP = async (setVerified, email) => {
 
         const data = await response.json();
 
-        if (data.available) {
-            const otp_code = generateOTP(); // generating OTP
-            const templateId = data.templateId
-            const serviceId = data.serviceId
-            const publickey = data.publickey
-
-            const messageData = {
-                service_id: serviceId,
-                template_id: templateId,
-                user_id: publickey,
-                template_params: {
-                    name: email,  
-                    otp_code: otp_code.toString()  // Convert OTP to string
-                }
-            };
-
-            await fetch('https://api.emailjs.com/api/v1.0/email/send', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(messageData),
-            });
+        if (data.otp) {
 
             setVerified("processing");
 
-            return otp_code
-        } else {
+            return data.otp
+        } else if(data.message) {
             setVerified("notAvailable")
+            toast.error(data.message)
             return undefined
         }
     } catch (error) {
