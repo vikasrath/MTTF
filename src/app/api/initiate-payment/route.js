@@ -68,7 +68,7 @@ export async function POST(req) {
                     customer_email: email,
                 },
                 order_meta: {
-                    return_url: "https://www.google.co.uk/",
+                    return_url: "https://mttfhub.com/",
                     notify_url: "https://paymentgateway-omega.vercel.app/api/verify-payment",
                 }
             },

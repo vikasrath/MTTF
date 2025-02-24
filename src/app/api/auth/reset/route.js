@@ -20,8 +20,8 @@ export async function POST(req) {
         if (user) {
             const otp_code = generateOTP();
             const { data, error } = await resend.emails.send({
-                from: 'onboarding@resend.dev',
-                to: ['devanshjindal31@gmail.com'],
+                from: 'sourabh@mttfhub.com',
+                to: [email],
                 subject: "Hello world",
                 react: <EmailTemplate firstName={otp_code} />,
             });
