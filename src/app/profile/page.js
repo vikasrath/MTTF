@@ -39,7 +39,7 @@ const Profile = () => {
     if (authUser) {
       setUser(authUser);
       setUpdatedUser(authUser);
-      setProfileImage(authUser.profileImage || "");
+      setProfileImage(authUser.image || "");
     }
   }, [authUser]);
 

@@ -59,7 +59,8 @@ export async function POST(req) {
         linkedin: existingUser.linkedin || "",
         googleScholar: existingUser.googleScholar || "",
         researchGate: existingUser.researchGate || "",
-        otherProfile: existingUser.otherProfile || ""  
+        otherProfile: existingUser.otherProfile || "",
+        image: existingUser.image || ""  
     }
     },
     { status: 200 }

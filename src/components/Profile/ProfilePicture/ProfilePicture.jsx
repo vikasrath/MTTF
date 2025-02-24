@@ -29,7 +29,7 @@ const ProfilePicture = ({ profileImage, setProfileImage }) => {
         setProfileImage(data.publicId);
 
         // Update authUser context with new profile image
-        const updatedUser = { ...authUser, profileImage: data.publicId };
+        const updatedUser = { ...authUser, image: data.publicId };
         setAuthUser(updatedUser);
         localStorage.setItem("user", JSON.stringify(updatedUser));
 
@@ -54,7 +54,7 @@ const ProfilePicture = ({ profileImage, setProfileImage }) => {
         <CldImage
           width="128"
           height="128"
-          src={profileImage}
+          src={authUser?.image}
           alt="Profile"
           className="w-full h-full rounded-full border-4 border-gray-300 object-cover"
         />
