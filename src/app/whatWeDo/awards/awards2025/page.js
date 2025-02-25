@@ -50,14 +50,14 @@ function Award2025() {
 
     return (
         <>
-                <Header
-                 
+            <Header
 
-                    title="IEARG Award 2025"
-                    description="The 2025 Awards will be held on National Science Day, February 28, to honor the discovery of the Raman effect by Sir C. V. Raman. In partnership with Sharda University, India, the event will recognize outstanding achievements across various fields, with a prize fund of 500,000 INR."
-                />
-                
-           
+
+                title="IEARG Award 2025"
+                description="The 2025 Awards will be held on National Science Day, February 28, to honor the discovery of the Raman effect by Sir C. V. Raman. In partnership with Sharda University, India, the event will recognize outstanding achievements across various fields, with a prize fund of 500,000 INR."
+            />
+
+
 
             <section className="py-8 ">
                 <div className="flex justify-center mb-8 p-12">
@@ -68,17 +68,18 @@ function Award2025() {
                     />
                 </div>
                 <div className="  w-full lg:w-[80%] lg:mx-auto">
-                    <div className="flex justify-evenly flex-wrap items-center gap-4 mb-8 ">
+                    <div className="flex justify-center flex-wrap gap-3 mb-6">
                         {buttons.map((btnname) => (
                             <button
                                 key={btnname}
-                                className="w-32 h-32 flex items-center justify-center text-white bg-blue-400 rounded-lg shadow-md hover:bg-blue-500 focus:ring-2 focus:ring-blue-300 transition"
+                                className="w-24 h-24 flex items-center justify-center text-white bg-blue-500 rounded-xl shadow-lg hover:bg-blue-600 active:scale-95 focus:ring-4 focus:ring-blue-300 transition-all"
                                 onClick={() => handleBtn(btnname)}
                             >
                                 {btnname}
                             </button>
                         ))}
                     </div>
+
                     {show.IEARGAward2025 && (
                         <div className="bg-white p-8 rounded-lg shadow-lg space-y-6">
                             <h2 className="text-2xl font-semibold">IEARG Awards 2025</h2>

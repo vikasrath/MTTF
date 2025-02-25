@@ -77,13 +77,9 @@ function BioinformaticsPage() {
         <>
 
             <Header
-                title="Exploring the Future of Bioinformatics"
-
+                title=" Bioinformatics"
                 description="Unlock the potential of Bioinformatics: Learn to analyze biological data and drive innovations in genomics, healthcare, and research."
-
             />
-
-
             <div className="bg-gradient-to-b from-blue-50 via-white to-gray-100 text-gray-800 min-h-screen py-12">
                 <div className=" w-full mx-auto">
 

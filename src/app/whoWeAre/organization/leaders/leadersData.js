@@ -11,6 +11,8 @@ import biswaranjan from "../../../../../public/assets/GovermentBodyImage/biswara
 import jatin from "../../../../../public/assets/GovermentBodyImage/jatin.jpeg";
 import daljeet from "../../../../../public/assets/GovermentBodyImage/daljeet.jpg";
 import sourabh from "../../../../../public/assets/GovermentBodyImage/sourabh.jpg";
+import vikas from "../../../../../public/assets/GovermentBodyImage/vikasimg1.jpg";
+import devansh from "../../../../../public/assets/GovermentBodyImage/devanshimg.jpg";
 
 
 export const leaders = {
@@ -28,8 +30,8 @@ export const leaders = {
         { name: "Shalu Gupta, Ph.D", position: "Executive Member (MTTF, India)", img: shalu },
         { name: "Daljeet Kaur, Ph.D", position: "Executive Member (MTTF, India)", img: daljeet },
         { name: "Jatin Bansal, JRF", position: "Executive Member (MTTF, India)", img: jatin, profileLink: "https://www.linkedin.com/in/jatin-bansal-201291256/" },
-        { name: "Vikas", position: "Software Developer", img: jatin, profileLink: "https://www.linkedin.com/in/vikas-rathore-a799432b9/" },
-        { name: "Devansh", position: "Software Developer", img: jatin, profileLink: "https://www.linkedin.com/in/devansh-agaarwal/" }
+        { name: "Vikas", position: "Software Developer", img: vikas, profileLink: "https://www.linkedin.com/in/vikas-rathore-a799432b9/" },
+        { name: "Devansh", position: "Software Developer", img: devansh, profileLink: "https://www.linkedin.com/in/devansh-agaarwal/" }
     ],
     advisory: [
         { name: "Mehar Chand, Ph.D", position: "Founder & President (MTTF, India)", img: meher, profileLink: "https://www.linkedin.com/in/dr-mehar-chand-5484b971/" },

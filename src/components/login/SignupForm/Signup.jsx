@@ -113,6 +113,7 @@ function Signup() {
             return
         } else {
             payNow(formData)
+      
         }
     } // handels form submission
 

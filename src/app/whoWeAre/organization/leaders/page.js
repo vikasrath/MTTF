@@ -67,8 +67,8 @@ function GoverningBody() {
       {data && (
         <div className="flex flex-col  md:p-0 pt-24">
           <div className="flex flex-wrap px-15 pb-16">
-            {data.map((member) => (
-              <div key={member.memberId} className=" w-full md:w-[50%] xl:w-1/3 mt-8 ">
+            {data.map((member,index) => (
+              <div key={index} className=" w-full md:w-[50%] xl:w-1/3 mt-8 ">
                 <LeadershipCard leader={member} />
               </div>
             ))}
