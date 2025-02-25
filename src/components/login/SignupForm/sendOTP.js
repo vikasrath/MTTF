@@ -1,3 +1,5 @@
+import toast from "react-hot-toast";
+
 const SendOTP = async (setVerified, email) => {
     try {
         let response = await fetch('/api/auth/email', {
@@ -19,7 +21,7 @@ const SendOTP = async (setVerified, email) => {
             return undefined
         }
     } catch (error) {
-        alert("something went wrong ! try again later")
+        alert(error.message)
         return undefined
     }
 };

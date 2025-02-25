@@ -13,7 +13,7 @@ export async function POST(req) {
         const { email } = await req.json();
 
         if (!email) {
-            return NextResponse.json({ error: "Email is required" }, { status: 400 });
+            return NextResponse.json({ message: "Email is required" }, { status: 400 });
         }
 
         const user = await User.findOne({ email });
@@ -27,10 +27,12 @@ export async function POST(req) {
             });
 
             if (error) {
-                return Response.json({ error }, { status: 500 });
+                return Response.json({ message:error.message }, { status: 500 });
             }
 
             return Response.json({ otp : otp_code }, { status: 200 });
+        } else {
+            return Response.json({ message: "Email not found" }, { status: 404 });
         }
     } catch (error) {
         console.error("Error checking email:", error);

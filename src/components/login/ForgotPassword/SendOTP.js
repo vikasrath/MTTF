@@ -12,6 +12,7 @@ const resetOTP = async (email, setVerified) => {
         const data = await response.json(); // Collecting response data
 
         if (!response.ok) {
+            toast.error(data.message || 'Failed to send OTP');
             throw new Error(data.message || "Something went wrong");
         }
 
