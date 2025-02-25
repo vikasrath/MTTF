@@ -30,7 +30,7 @@ export async function POST(req) {
 
         // Send email with OTP
         const { error } = await resend.emails.send({
-            from: 'onboarding@resend.dev',
+            from: 'sourabh@mttfhub.com',
             to: [email], // Send OTP to the provided email
             subject: "Your OTP Code",
             react: <EmailTemplate firstName={otp_code} />, // Assuming EmailTemplate can accept OTP

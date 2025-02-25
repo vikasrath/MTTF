@@ -28,11 +28,9 @@ function Signup() {
     useEffect(() => {
         const fetchCountry = async () => {
             try {
-                const res = await fetch("https://ipinfo.io/json?token=77eb4a3b509978");
+                const res = await fetch("https://ipinfo.io/json?token=cddcb524a0366c");
 
-                
                 const data = await res.json();
-                console.log(data);
                 if (!data.country) throw new alert("Failed to fetch country");
 
                 setFormData((prev) => ({ ...prev, country: data.country, institutionalamount: data.country == "IN" ? 2000 : 17558 }));
@@ -40,7 +38,6 @@ function Signup() {
                 alert("Error fetching country");
             }
         };
-
         fetchCountry();
     }, []); // detect the country of user
 
